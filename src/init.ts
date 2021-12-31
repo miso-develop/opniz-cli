@@ -31,7 +31,10 @@ const initConfig = async (): Promise<void> => {
 
 const installCore = async (): Promise<void> => {
 	// $.verbose = true // debug:
-	await $`${cliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
+	
+	// MEMO: なくても良さげかつ`lib update-index`がM1 macでエラーで止まったので同様にコメントアウト
+	// await $`${cliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
+	
 	await retryCommand(`${cliPath} core install esp32:esp32`, 30) // ESP32ボードパッケージインストール
 }
 
@@ -43,7 +46,9 @@ const installLibrary = async (): Promise<void> => {
 	}
 	const m5Library = m5LibraryList.m5atom
 	
-	await $`${cliPath} lib update-index` // ライブラリのローカルキャッシュ更新
+	// MEMO: なくても良さげかつM1 macでエラーで止まったのでコメントアウト
+	// await $`${cliPath} lib update-index` // ライブラリのローカルキャッシュ更新
+	
 	await retryCommand(`${cliPath} lib install ArduinoJson WebSockets ${m5Library}`, 10) // 依存ライブラリインストール
 }
 

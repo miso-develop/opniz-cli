@@ -1,8 +1,6 @@
 import "zx/globals"
 import admZip from "adm-zip"
-import zlib from "zlib"
 import tar from "tar"
-import promisePipe from "promisepipe"
 import { init } from "./init"
 
 $.verbose = false
@@ -24,7 +22,7 @@ const getUrl = (): { url: string, ext: Extension } => {
 	// macOS,	64bit,	tar.gz
 	
 	let platform = getPlatform()
-	let arch = getArch()
+	let arch = getArch(platform)
 	let ext = getExt(platform)
 	const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}`
 	return { url, ext }
@@ -62,7 +60,10 @@ const Architecture = {
 }
 type Architecture = typeof Architecture [keyof typeof Architecture ]
 
-const getArch = (): Architecture => {
+const getArch = (platform: Platform): Architecture => {
+	// MEMO: M1 macの場合だとarchでARM64が返ってくるが2022/1/1現在非対応のため、macOSならarchは64bit固定で返す
+	if (platform === Platform["macOS"]) return Architecture["64bit"]
+	
 	// https://nodejs.org/api/process.html#processarch
 	// "arm"
 	// "arm64"
@@ -128,9 +129,10 @@ const extractZip = async (): Promise<void> => {
 }
 
 const extractTarGz = async (): Promise<void> => {
-	var gunzip = zlib.createGunzip()
-	var extractor = tar.extract({ cwd: installPath })
-	await promisePipe(fs.createReadStream(downloadPath), gunzip, extractor)
+	var extractor = tar.x({ cwd: installPath })
+	await new Promise((resolve, reject) => {
+		fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve)
+	})
 }
 
 

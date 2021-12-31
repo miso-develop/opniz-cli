@@ -143,8 +143,5 @@ dist
 
 ## prod
 !/dist
-/dist/*
-!/dist/index.js
-!/dist/install.js
 
 .temp

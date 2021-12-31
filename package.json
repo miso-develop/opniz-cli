@@ -1,6 +1,6 @@
 {
 	"name": "opniz-cli",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "",
 	"keywords": [
 		"opniz",
@@ -39,7 +39,7 @@
 		"prebuild:prod": "npm run clean",
 		"prebuild:dev": "npm run clean",
 		"prebuild": "npm run clean",
-		"build:prod": "npx esbuild --bundle --minify --outdir=dist --platform=node --format=cjs index=src/index.ts install=src/install.ts",
+		"build:prod": "npx npx tsc --declaration false --declarationMap false --sourceMap false",
 		"build:dev": "npx tsc",
 		"build": "npm run build:dev",
 		"bp": "npm run build:prod",
@@ -59,9 +59,7 @@
 		"adm-zip": "^0.5.9",
 		"commander": "^8.3.0",
 		"ora": "^5.4.1",
-		"promisepipe": "^3.0.0",
 		"tar": "^6.1.11",
-		"zlib": "^1.0.5",
 		"zx": "^4.2.0"
 	},
 	"devDependencies": {
