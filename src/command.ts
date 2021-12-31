@@ -7,6 +7,7 @@ process.chdir(__dirname + "/../")
 const cliPath = `./arduino-cli/arduino-cli`
 
 
+
 const spinnerWrap = async (text, func, stopType = "stop") => {
 	const spinner = ora(text).start()
 	

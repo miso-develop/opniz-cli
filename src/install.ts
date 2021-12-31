@@ -143,8 +143,7 @@ const install = async (): Promise<void> => {
 
 
 
-const main = async (): Promise<void> => {
+; (async () => {
 	await install()
 	await init()
-}
-main()
+})()
