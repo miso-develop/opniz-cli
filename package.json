@@ -1,0 +1,78 @@
+{
+	"name": "opniz-cli",
+	"version": "0.1.0",
+	"description": "",
+	"keywords": [
+		"opniz",
+		"m5stack",
+		"m5atom",
+		"esp32",
+		"arduino-cli"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/miso-develop/opniz-cli",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/miso-develop/opniz-cli"
+	},
+	"bugs": "https://github.com/miso-develop/opniz-cli/issues",
+	"author": "Miso Tanaka <miso.develop@gmail.com>",
+	"main": "dist/index.js",
+	"bin": {
+		"opniz": "dist/index.js"
+	},
+	"engines": {
+		"node": ">=12.x"
+	},
+	"private": false,
+	"scripts": {
+		"postinstall": "node ./dist/install.js",
+		"node": "node dist",
+		"n": "npm run node",
+		"nodemon": "nodemon --watch dist dist/index.js",
+		"nm": "npm run nodemon",
+		"prestart": "npm run build",
+		"start": "npm run node",
+		"s": "npm start",
+		"clean": "npx rimraf dist",
+		"c": "npm run clean",
+		"prebuild:prod": "npm run clean",
+		"prebuild:dev": "npm run clean",
+		"prebuild": "npm run clean",
+		"build:prod": "npx esbuild --bundle --minify --outdir=dist --platform=node --format=cjs index=src/index.ts install=src/install.ts",
+		"build:dev": "npx tsc",
+		"build": "npm run build:dev",
+		"bp": "npm run build:prod",
+		"bd": "npm run build:dev",
+		"b": "npm run build",
+		"watch": "npm run build:dev -- --watch",
+		"w": "npm run watch",
+		"lint": "npx eslint {src,tests,examples}/**/*.{ts,js}",
+		"l": "npm run lint",
+		"lint:fix": "npx eslint --fix {src,tests,examples}/**/*.{ts,js}",
+		"lf": "npm run lint:fix",
+		"update": "npm i || npm run build:prod && npm run postinstall",
+		"u": "npm run update",
+		"": ""
+	},
+	"dependencies": {
+		"adm-zip": "^0.5.9",
+		"commander": "^8.3.0",
+		"ora": "^5.4.1",
+		"promisepipe": "^3.0.0",
+		"tar": "^6.1.11",
+		"zlib": "^1.0.5",
+		"zx": "^4.2.0"
+	},
+	"devDependencies": {
+		"@types/eslint": "^8.2.1",
+		"@types/node": "^17.0.5",
+		"@typescript-eslint/eslint-plugin": "^5.8.1",
+		"@typescript-eslint/parser": "^5.8.1",
+		"esbuild": "^0.14.8",
+		"eslint": "^8.5.0",
+		"rimraf": "^3.0.2",
+		"source-map-support": "^0.5.21",
+		"typescript": "^4.5.4"
+	}
+}
