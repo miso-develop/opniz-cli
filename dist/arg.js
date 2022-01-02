@@ -15,10 +15,11 @@ const program = new commander_1.Command();
 program.helpOption("-h, --help", "コマンドのヘルプを表示します。");
 const version = "v" + require("../package.json").version;
 program.version(version, "-v, --version", "バージョンを表示します。");
+// MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
 // program.command("init")
 // 	.description("opniz書き込み環境を構築します。")
-// 	.action(async (cmd) => {
-// 		// console.log(cmd)
+// 	.action(async (options) => {
+// 		// console.log(options)
 // 		await init()
 // 	})
 const validNumber = (value) => {
@@ -43,20 +44,26 @@ program.command("upload <device-port>")
     .addOption(new commander_1.Option("-d, --device <device>", "デバイス種別を指定します。")
     .default("m5atom")
     .choices(["esp32", "m5atom", "m5stickc", "m5stack"]))
-    .action((devicePort, cmd) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(devicePort, cmd)
-    yield (0, command_1.upload)(devicePort, cmd.ssid, cmd.password, cmd.address, Number(cmd.port), cmd.id, cmd.device);
+    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(devicePort, options)
+    yield (0, command_1.upload)(devicePort, options.ssid, options.password, options.address, Number(options.port), options.id, options.device);
 }));
 program.command("monitor <device-port>")
     .description("シリアルモニタを表示します。")
-    .action((devicePort, cmd) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(devicePort, cmd)
+    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(devicePort, options)
     yield (0, command_1.monitor)(devicePort);
 }));
 program.command("list")
     .description("接続されているデバイス情報を表示します。")
-    .action((cmd) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(cmd)
+    .action((options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(options)
     yield (0, command_1.list)();
+}));
+program.command("arduino [\"options\"]")
+    .description("Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino \"version\"）")
+    .action((options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(options)
+    yield (0, command_1.arduino)(options !== null && options !== void 0 ? options : "");
 }));
 program.parse(process.argv);

@@ -1,5 +1,5 @@
 import { Command, Option, InvalidArgumentError } from "commander"
-import { init, list, upload, monitor } from "./command/command"
+import { init, list, upload, monitor, arduino } from "./command/command"
 
 const program = new Command()
 
@@ -8,10 +8,11 @@ program.helpOption("-h, --help", "コマンドのヘルプを表示します。"
 const version = "v" + require("../package.json").version
 program.version(version, "-v, --version", "バージョンを表示します。")
 
+// MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
 // program.command("init")
 // 	.description("opniz書き込み環境を構築します。")
-// 	.action(async (cmd) => {
-// 		// console.log(cmd)
+// 	.action(async (options) => {
+// 		// console.log(options)
 // 		await init()
 // 	})
 
@@ -37,23 +38,30 @@ program.command("upload <device-port>")
 		.default("m5atom")
 		.choices(["esp32", "m5atom", "m5stickc", "m5stack"])
 	)
-	.action(async (devicePort, cmd) => {
-		// console.log(devicePort, cmd)
-		await upload(devicePort, cmd.ssid, cmd.password, cmd.address, Number(cmd.port), cmd.id, cmd.device)
+	.action(async (devicePort, options) => {
+		// console.log(devicePort, options)
+		await upload(devicePort, options.ssid, options.password, options.address, Number(options.port), options.id, options.device)
 	})
 
 program.command("monitor <device-port>")
 	.description("シリアルモニタを表示します。")
-	.action(async (devicePort, cmd) => {
-		// console.log(devicePort, cmd)
+	.action(async (devicePort, options) => {
+		// console.log(devicePort, options)
 		await monitor(devicePort)
 	})
 
 program.command("list")
 	.description("接続されているデバイス情報を表示します。")
-	.action(async (cmd) => {
-		// console.log(cmd)
+	.action(async (options) => {
+		// console.log(options)
 		await list()
+	})
+
+program.command("arduino [\"options\"]")
+	.description("Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino \"version\"）")
+	.action(async (options) => {
+		// console.log(options)
+		await arduino(options ?? "")
 	})
 
 program.parse(process.argv)

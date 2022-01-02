@@ -21,9 +21,21 @@ const monitor = async (devicePort: string): Promise<void> => {
 	}
 }
 
+const arduino = async (options: string): Promise<void> => {
+	try {
+		const command = `${cliPath} ${options}`
+		const pieces = [command] as any as TemplateStringsArray
+		await $(pieces).pipe(process.stdout)
+		
+	} catch(e) {
+		// console.log(e.message)
+	}
+}
+
 export {
 	init,
 	upload,
 	list,
 	monitor,
+	arduino,
 }

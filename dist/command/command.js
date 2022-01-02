@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.monitor = exports.list = exports.upload = exports.init = void 0;
+exports.arduino = exports.monitor = exports.list = exports.upload = exports.init = void 0;
 require("zx/globals");
 const config_1 = require("../config");
 const util_1 = require("./util");
@@ -34,3 +34,14 @@ const monitor = (devicePort) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.monitor = monitor;
+const arduino = (options) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const command = `${config_1.cliPath} ${options}`;
+        const pieces = [command];
+        yield $(pieces).pipe(process.stdout);
+    }
+    catch (e) {
+        // console.log(e.message)
+    }
+});
+exports.arduino = arduino;

@@ -34,6 +34,7 @@ Commands:
   upload [options] <device-port>  デバイスへopnizを書き込みます。
   monitor <device-port>           シリアルモニタを表示します。
   list                            接続されているデバイス情報を表示します。
+  arduino ["options"]             Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino "version"）
   help [command]                  display help for command
 ```
 
@@ -81,7 +82,20 @@ opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 opniz monitor <PORT>
 ```
 
+### `arduino`: Arduino CLI直接実行
 
+Arduino CLIを直接実行します。  
+`<OPTIONS>`をダブルクォーテーションで括って実行します。  
+
+```sh
+opniz arduino "<OPTIONS>"
+```
+
+```sh
+// example
+$ opniz arduino "version"
+$ opniz arduino "lib list"
+```
 
 ## 関連リポジトリ
 
