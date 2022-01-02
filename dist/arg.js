@@ -16,12 +16,19 @@ program.helpOption("-h, --help", "コマンドのヘルプを表示します。"
 const version = "v" + require("../package.json").version;
 program.version(version, "-v, --version", "バージョンを表示します。");
 // MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
-// program.command("init")
-// 	.description("opniz書き込み環境を構築します。")
-// 	.action(async (options) => {
-// 		// console.log(options)
-// 		await init()
-// 	})
+program.command("init", { hidden: true })
+    .description("opniz書き込み環境を構築します。")
+    .addHelpCommand(false)
+    .action((options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(options)
+    yield (0, command_1.init)();
+}));
+program.command("list")
+    .description("接続されているデバイス情報を表示します。")
+    .action((options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(options)
+    yield (0, command_1.list)();
+}));
 const validNumber = (value) => {
     const number = Number(value);
     if (!number)
@@ -53,12 +60,6 @@ program.command("monitor <device-port>")
     .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(devicePort, options)
     yield (0, command_1.monitor)(devicePort);
-}));
-program.command("list")
-    .description("接続されているデバイス情報を表示します。")
-    .action((options) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(options)
-    yield (0, command_1.list)();
 }));
 program.command("arduino [\"options\"]")
     .description("Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino \"version\"）")

@@ -9,12 +9,20 @@ const version = "v" + require("../package.json").version
 program.version(version, "-v, --version", "バージョンを表示します。")
 
 // MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
-// program.command("init")
-// 	.description("opniz書き込み環境を構築します。")
-// 	.action(async (options) => {
-// 		// console.log(options)
-// 		await init()
-// 	})
+program.command("init", { hidden: true })
+.description("opniz書き込み環境を構築します。")
+.addHelpCommand(false)
+.action(async (options) => {
+	// console.log(options)
+	await init()
+})
+
+program.command("list")
+	.description("接続されているデバイス情報を表示します。")
+	.action(async (options) => {
+		// console.log(options)
+		await list()
+	})
 
 const validNumber = (value: string): number => {
 	const number = Number(value)
@@ -48,13 +56,6 @@ program.command("monitor <device-port>")
 	.action(async (devicePort, options) => {
 		// console.log(devicePort, options)
 		await monitor(devicePort)
-	})
-
-program.command("list")
-	.description("接続されているデバイス情報を表示します。")
-	.action(async (options) => {
-		// console.log(options)
-		await list()
 	})
 
 program.command("arduino [\"options\"]")
