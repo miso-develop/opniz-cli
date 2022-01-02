@@ -3,7 +3,7 @@
 opniz CLIは[opniz Arduino Library](https://github.com/miso-develop/opniz-arduino-m5atom)の[Basicスケッチ](https://github.com/miso-develop/opniz-arduino-m5atom/blob/main/examples/Basic/Basic.ino)を、コマンドから簡単に書き込めるCLIツールです。  
 [Arduino CLI](https://github.com/arduino/arduino-cli)のラッパーCLIです。  
 
-現時点ではM5ATOMのみサポートしています。  
+M5Stack、M5Stick-C, M5ATOM, ESP32をサポートしています。  
 
 
 
