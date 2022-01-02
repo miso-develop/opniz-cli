@@ -15,11 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("zx/globals");
 const adm_zip_1 = __importDefault(require("adm-zip"));
 const tar_1 = __importDefault(require("tar"));
-const init_1 = require("./init");
+const command_1 = require("./command/command");
+const type_1 = require("./type");
 $.verbose = false;
 process.chdir(__dirname + "/../");
 const downloadPath = "./download";
 const installPath = "./arduino-cli/";
+const install = () => __awaiter(void 0, void 0, void 0, function* () {
+    const { url, ext } = getUrl();
+    yield download(url);
+    yield extract(ext);
+});
 const getUrl = () => {
     // https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
     // Linux,	32bit,	tar.gz
@@ -35,11 +41,6 @@ const getUrl = () => {
     const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}`;
     return { url, ext };
 };
-const Platform = {
-    "Windows": "Windows",
-    "macOS": "macOS",
-    "Linux": "Linux"
-};
 const getPlatform = () => {
     // https://nodejs.org/api/process.html#processplatform
     // "aix"
@@ -50,22 +51,16 @@ const getPlatform = () => {
     // "sunos"
     // "win32"
     switch (os.platform()) {
-        case "win32": return Platform["Windows"];
-        case "darwin": return Platform["macOS"];
-        case "linux": return Platform["Linux"];
-        default: return Platform["Linux"];
+        case "win32": return type_1.Platform["Windows"];
+        case "darwin": return type_1.Platform["macOS"];
+        case "linux": return type_1.Platform["Linux"];
+        default: return type_1.Platform["Linux"];
     }
-};
-const Architecture = {
-    "ARMv7": "ARMv7",
-    "ARM64": "ARM64",
-    "32bit": "32bit",
-    "64bit": "64bit",
 };
 const getArch = (platform) => {
     // MEMO: M1 macの場合だとarchでARM64が返ってくるが2022/1/1現在非対応のため、macOSならarchは64bit固定で返す
-    if (platform === Platform["macOS"])
-        return Architecture["64bit"];
+    if (platform === type_1.Platform["macOS"])
+        return type_1.Architecture["64bit"];
     // https://nodejs.org/api/process.html#processarch
     // "arm"
     // "arm64"
@@ -79,23 +74,19 @@ const getArch = (platform) => {
     // "x32"
     // "x64"
     switch (os.arch()) {
-        case "arm": return Architecture["ARMv7"];
-        case "arm64": return Architecture["ARM64"];
-        case "x32": return Architecture["32bit"];
-        case "x64": return Architecture["64bit"];
-        default: return Architecture["64bit"];
+        case "arm": return type_1.Architecture["ARMv7"];
+        case "arm64": return type_1.Architecture["ARM64"];
+        case "x32": return type_1.Architecture["32bit"];
+        case "x64": return type_1.Architecture["64bit"];
+        default: return type_1.Architecture["64bit"];
     }
-};
-const Extension = {
-    ".zip": ".zip",
-    ".tar.gz": ".tar.gz",
 };
 const getExt = (platform) => {
     switch (platform) {
-        case Platform["Windows"]: return Extension[".zip"];
-        case Platform["macOS"]: return Extension[".tar.gz"];
-        case Platform["Linux"]: return Extension[".tar.gz"];
-        default: return Extension[".tar.gz"];
+        case type_1.Platform["Windows"]: return type_1.Extension[".zip"];
+        case type_1.Platform["macOS"]: return type_1.Extension[".tar.gz"];
+        case type_1.Platform["Linux"]: return type_1.Extension[".tar.gz"];
+        default: return type_1.Extension[".tar.gz"];
     }
 };
 const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
@@ -111,9 +102,9 @@ const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
 const extract = (ext) => __awaiter(void 0, void 0, void 0, function* () {
     if (!fs.existsSync(installPath))
         fs.mkdirSync(installPath);
-    if (ext === Extension[".zip"])
+    if (ext === type_1.Extension[".zip"])
         yield extractZip();
-    if (ext === Extension[".tar.gz"])
+    if (ext === type_1.Extension[".tar.gz"])
         yield extractTarGz();
     fs.unlinkSync(downloadPath);
 });
@@ -128,12 +119,7 @@ const extractTarGz = () => __awaiter(void 0, void 0, void 0, function* () {
         fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve);
     });
 });
-const install = () => __awaiter(void 0, void 0, void 0, function* () {
-    const { url, ext } = getUrl();
-    yield download(url);
-    yield extract(ext);
-});
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield install();
-    yield (0, init_1.init)();
+    yield (0, command_1.init)();
 }))();

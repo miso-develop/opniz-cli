@@ -69,6 +69,7 @@ opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 |`-a`, `--address`|⭕|デバイスを制御するopnizプログラム実行マシンまたはopnizサーバのIPアドレスを指定します。|
 |`-P`, `--port`||デバイスを制御するopnizプログラム実行マシンまたはopnizサーバのポート番号を指定します。<br>省略時は`3000`が指定されます。|
 |`-i`, `--id`||opniz IDを指定します。|
+|`-d`, `--device`||デバイス種別を指定します。<br>`esp32`、`m5atom`、`m5stickc`、`m5stack`のいずれか指定します。<br>省略時は`m5atom`が指定されます。|
 |`-h`, `--help`||ヘルプを表示します。|
 
 ### `monitor`: シリアルモニタ

@@ -1,13 +1,22 @@
 import "zx/globals"
 import admZip from "adm-zip"
 import tar from "tar"
-import { init } from "./init"
+import { init } from "./command/command"
+import { Platform, Architecture, Extension } from "./type"
 
 $.verbose = false
 process.chdir(__dirname + "/../")
 
 const downloadPath = "./download"
 const installPath = "./arduino-cli/"
+
+
+
+const install = async (): Promise<void> => {
+	const { url, ext } = getUrl()
+	await download(url)
+	await extract(ext)
+}
 
 
 
@@ -28,13 +37,6 @@ const getUrl = (): { url: string, ext: Extension } => {
 	return { url, ext }
 }
 
-const Platform = {
-	"Windows": "Windows",
-	"macOS": "macOS",
-	"Linux": "Linux"
-}
-type Platform = typeof Platform[keyof typeof Platform]
-
 const getPlatform = (): Platform => {
 	// https://nodejs.org/api/process.html#processplatform
 	// "aix"
@@ -51,14 +53,6 @@ const getPlatform = (): Platform => {
 		default: return Platform["Linux"]
 	}
 }
-
-const Architecture = {
-	"ARMv7": "ARMv7",
-	"ARM64": "ARM64",
-	"32bit": "32bit",
-	"64bit": "64bit",
-}
-type Architecture = typeof Architecture [keyof typeof Architecture ]
 
 const getArch = (platform: Platform): Architecture => {
 	// MEMO: M1 macの場合だとarchでARM64が返ってくるが2022/1/1現在非対応のため、macOSならarchは64bit固定で返す
@@ -84,12 +78,6 @@ const getArch = (platform: Platform): Architecture => {
 		default: return Architecture["64bit"]
 	}
 }
-
-const Extension = {
-	".zip": ".zip",
-	".tar.gz": ".tar.gz",
-}
-type Extension = typeof Extension[keyof typeof Extension]
 
 const getExt = (platform: Platform): Extension => {
 	switch(platform) {
@@ -133,14 +121,6 @@ const extractTarGz = async (): Promise<void> => {
 	await new Promise((resolve, reject) => {
 		fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve)
 	})
-}
-
-
-
-const install = async (): Promise<void> => {
-	const { url, ext } = getUrl()
-	await download(url)
-	await extract(ext)
 }
 
 

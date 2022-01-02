@@ -1,19 +1,15 @@
 import "zx/globals"
+import { cliPath, configPath } from "../config"
+import { retryCommand } from "./util"
 
 $.verbose = false
-process.chdir(__dirname + "/../")
+process.chdir(__dirname + "/../../")
 
-const cliPath = `./arduino-cli/arduino-cli`
-const configPath = `./arduino-cli.yaml`
-
-
-
-const init = async () => {
+export const init = async () => {
 	await initConfig()
 	await Promise.all([
 		installCore(),
 		installLibrary(),
-		installOpniz(),
 	])
 }
 
@@ -39,40 +35,8 @@ const installCore = async (): Promise<void> => {
 }
 
 const installLibrary = async (): Promise<void> => {
-	// TODO: デバイスにより分岐
-	const m5LibraryList = {
-		m5atom: "M5Atom@0.0.3 FastLED",
-		esp32: "",
-	}
-	const m5Library = m5LibraryList.m5atom
-	
 	// MEMO: なくても良さげかつM1 macでエラーで止まったのでコメントアウト
 	// await $`${cliPath} lib update-index` // ライブラリのローカルキャッシュ更新
 	
-	await retryCommand(`${cliPath} lib install ArduinoJson WebSockets ${m5Library}`, 10) // 依存ライブラリインストール
+	await retryCommand(`${cliPath} lib install ArduinoJson WebSockets`, 10) // 依存ライブラリインストール
 }
-
-const installOpniz = async (): Promise<void> => {
-	// TODO: デバイスにより分岐
-	const opnizLibraryList = {
-		m5atom: "https://github.com/miso-develop/opniz-arduino-m5atom",
-		esp32: "https://github.com/miso-develop/opniz-arduino-esp32",
-	}
-	const opnizLibrary = opnizLibraryList.m5atom
-	
-	await retryCommand(`${cliPath} lib install --git-url ${opnizLibrary}`, 10) // opniz Arduinoライブラリインストール
-}
-
-const retryCommand = async (command: string, max: number): Promise<void> => {
-	const pieces = [command] as any as TemplateStringsArray
-	let count = 0
-	while (count < max) {
-		if (count > 0) console.log("retry:", count, command) // debug:
-		count++
-		if (await $(pieces).exitCode === 0) return
-	}
-}
-
-
-
-export { init }
