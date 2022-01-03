@@ -139,6 +139,9 @@ dist
 # opniz-cli
 /arduino-cli
 /arduino-cli.yaml
+/d
+/dl
+/u
 /sketch
 
 ## prod

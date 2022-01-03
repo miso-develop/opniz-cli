@@ -3,7 +3,7 @@
 opniz CLIは[opniz Arduino Library](https://github.com/miso-develop/opniz-arduino-m5atom)の[Basicスケッチ](https://github.com/miso-develop/opniz-arduino-m5atom/blob/main/examples/Basic/Basic.ino)を、コマンドから簡単に書き込めるCLIツールです。  
 [Arduino CLI](https://github.com/arduino/arduino-cli)のラッパーCLIです。  
 
-M5Stack、M5Stick-C, M5ATOM, ESP32をサポートしています。  
+M5Stack、M5Stick-C、M5ATOM、ESP32をサポートしています。  
 
 
 
@@ -15,15 +15,17 @@ M5Stack、M5Stick-C, M5ATOM, ESP32をサポートしています。
 そのためインストールに5分ほどかかり、約800MBほどストレージを消費します。  
 
 ```sh
-$ npm install -g opniz-cli
+$ npm install opniz-cli
 ```
+
+> ※Windows環境にて43文字を超えるパス長のディレクトリにインストールするとupload時にエラーが発生します。内部でArduino CLIの環境構築を行う際にさらに深いディレクトリ階層が生成されWindowsのパス長制限を超えてしまっているようです。  
 
 
 
 ## 使い方
 
 ```sh
-$ opniz -h
+$ npx opniz -h
 Usage: index [options] [command]
 
 Options:
@@ -43,7 +45,7 @@ Commands:
 デバイスをPCへ接続した状態で実行するとボード情報（port等）が表示されます。
 
 ```sh
-$ opniz list
+$ npx opniz list
 Port Protocol Type    Board Name FQBN Core
 COM1 serial   Unknown
 ```
@@ -58,7 +60,7 @@ COM1 serial   Unknown
 * `<ADDRESS>`にopnizプログラムを実行するマシンのIPアドレスを指定します
 
 ```sh
-opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
+npx opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 ```
 
 上記の必須オプション以外にも任意のオプションがいくつかあります。
@@ -79,7 +81,7 @@ opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 `<PORT>`に`opniz list`で表示されるデバイスの`port`を指定します。  
 
 ```sh
-opniz monitor <PORT>
+npx opniz monitor <PORT>
 ```
 
 ### `arduino`: Arduino CLI直接実行
@@ -88,14 +90,16 @@ Arduino CLIを直接実行します。
 `<OPTIONS>`をダブルクォーテーションで括って実行します。  
 
 ```sh
-opniz arduino "<OPTIONS>"
+npx opniz arduino "<OPTIONS>"
 ```
 
 ```sh
 // example
-$ opniz arduino "version"
-$ opniz arduino "lib list"
+$ npx opniz arduino "version"
+$ npx opniz arduino "lib list"
 ```
+
+
 
 ## 関連リポジトリ
 

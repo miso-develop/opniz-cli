@@ -6,7 +6,9 @@ $.verbose = false
 process.chdir(__dirname + "/../../")
 
 export const init = async () => {
+	// $.verbose = true // DEBUG:
 	await initConfig()
+	
 	await Promise.all([
 		installCore(),
 		installLibrary(),
@@ -18,16 +20,20 @@ const initConfig = async (): Promise<void> => {
 	
 	await $`${cliPath} config set board_manager.additional_urls https://dl.espressif.com/dl/package_esp32_index.json` // ESP32用ボードマネージャ追加
 	await $`${cliPath} config set library.enable_unsafe_install true`
+	await $`${cliPath} config set metrics.enabled false`
+	// await $`${cliPath} config set sketch.always_export_binaries true` // MEMO: なくても良さげ
+	await $`${cliPath} config set updater.enable_notification false`
 	
-	for (const dir of [ "data", "downloads", "user" ]) {
-		const dirPath = `./arduino-cli/${dir}`
-		await $`${cliPath} config set directories.${dir} ${dirPath}`
+	// MEMO: インストールディレクトリのパス長制限をできる限り緩和するため、各ディレクトリをできる限り短いパスへ
+	const dirs = {
+		"data": "./d",
+		"downloads": "./dl",
+		"user": "./u",
 	}
+	for (const [dir, path] of Object.entries(dirs)) await $`${cliPath} config set directories.${dir} ${path}`
 }
 
 const installCore = async (): Promise<void> => {
-	// $.verbose = true // debug:
-	
 	// MEMO: なくても良さげかつ`lib update-index`がM1 macでエラーで止まったので同様にコメントアウト
 	// await $`${cliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
 	
