@@ -30,12 +30,13 @@ const spinnerWrap = (text, func, stopType = "stop") => __awaiter(void 0, void 0,
     const spinner = (0, ora_1.default)(text).start();
     try {
         const result = yield func();
+        if (result)
+            console.log(result.replace(/(\n\n)+/, ""));
         spinner[stopType]();
-        console.log(result);
     }
     catch (e) {
         spinner.fail();
-        console.error(e.message);
+        throw e;
     }
 });
 exports.spinnerWrap = spinnerWrap;

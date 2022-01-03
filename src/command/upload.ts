@@ -15,25 +15,42 @@ export const upload = async (
 	id: string,
 	device: Device,
 ): Promise<void> => {
-	await spinnerWrap(`Uploading opniz to port: ${devicePort}`, async () => {
+	await spinnerWrap(`Create sketch`, async () => {
 		await Promise.all([
 			createSketch(ssid, password, address, port, id, device),
 			installDeviceLibrary(device),
 			installOpniz(device),
 		])
-		
-		// TODO: デバイスにより分岐
-		const fqbnList = {
-			esp32: "esp32:esp32:esp32",
-			m5atom: "esp32:esp32:m5stack-atom",
-			m5stickc: "esp32:esp32:m5stick-c",
-			m5stack: "esp32:esp32:m5stack-core-esp32",
-		}
-		const fqbn = fqbnList[device]
-		return (await $`${cliPath} compile --fqbn ${fqbn} --upload --port ${devicePort} sketch`).stdout
 	}, "succeed")
 	
+	await uploadSketch(devicePort, device)
 }
+
+
+
+const uploadSketch = async (devicePort: string, device: Device) => {
+	const fqbn = getFqbn(device)
+	
+	await spinnerWrap(`Compile sketch`, async () => {
+		return (await $`${cliPath} compile --fqbn ${fqbn} sketch`).stdout
+	}, "succeed")
+	
+	await spinnerWrap(`Upload opniz to port: ${devicePort}`, async () => {
+		return (await $`${cliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout
+	}, "succeed")
+}
+
+const getFqbn = (device: Device): string => {
+	switch (device) {
+		case Device.esp32: return "esp32:esp32:esp32"
+		case Device.m5atom: return "esp32:esp32:m5stack-atom"
+		case Device.m5stickc: return "esp32:esp32:m5stick-c"
+		case Device.m5stack: return "esp32:esp32:m5stack-core-esp32"
+		default: throw new Error("Not found device!")
+	}
+}
+
+
 
 const createSketch = async (
 	ssid: string,
@@ -70,6 +87,8 @@ const getTemplateSketch = (device: Device): string => {
 	}
 }
 
+
+
 const installDeviceLibrary = async (device: Device): Promise<void> => {
 	const m5Library = getM5Library(device)
 	if (m5Library === "") return
@@ -85,6 +104,8 @@ const getM5Library = (device: Device): string => {
 		default: throw new Error("Not found device!")
 	}
 }
+
+
 
 const installOpniz = async (device: Device): Promise<void> => {
 	const opnizLibrary = getOpnizLibrary(device)

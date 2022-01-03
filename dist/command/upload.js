@@ -17,24 +17,34 @@ const type_1 = require("../type");
 $.verbose = false;
 process.chdir(__dirname + "/../../");
 const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, util_1.spinnerWrap)(`Uploading opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, util_1.spinnerWrap)(`Create sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
         yield Promise.all([
             createSketch(ssid, password, address, port, id, device),
             installDeviceLibrary(device),
             installOpniz(device),
         ]);
-        // TODO: デバイスにより分岐
-        const fqbnList = {
-            esp32: "esp32:esp32:esp32",
-            m5atom: "esp32:esp32:m5stack-atom",
-            m5stickc: "esp32:esp32:m5stick-c",
-            m5stack: "esp32:esp32:m5stack-core-esp32",
-        };
-        const fqbn = fqbnList[device];
-        return (yield $ `${config_1.cliPath} compile --fqbn ${fqbn} --upload --port ${devicePort} sketch`).stdout;
     }), "succeed");
+    yield uploadSketch(devicePort, device);
 });
 exports.upload = upload;
+const uploadSketch = (devicePort, device) => __awaiter(void 0, void 0, void 0, function* () {
+    const fqbn = getFqbn(device);
+    yield (0, util_1.spinnerWrap)(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
+        return (yield $ `${config_1.cliPath} compile --fqbn ${fqbn} sketch`).stdout;
+    }), "succeed");
+    yield (0, util_1.spinnerWrap)(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
+        return (yield $ `${config_1.cliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout;
+    }), "succeed");
+});
+const getFqbn = (device) => {
+    switch (device) {
+        case type_1.Device.esp32: return "esp32:esp32:esp32";
+        case type_1.Device.m5atom: return "esp32:esp32:m5stack-atom";
+        case type_1.Device.m5stickc: return "esp32:esp32:m5stick-c";
+        case type_1.Device.m5stack: return "esp32:esp32:m5stack-core-esp32";
+        default: throw new Error("Not found device!");
+    }
+};
 const createSketch = (ssid, password, address, port = 3000, id = "", device = "m5atom") => __awaiter(void 0, void 0, void 0, function* () {
     const sketchDir = "sketch";
     const sketchPath = `./${sketchDir}/${sketchDir}.ino`;

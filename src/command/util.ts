@@ -15,11 +15,11 @@ export const spinnerWrap = async (text, func, stopType = "stop") => {
 	
 	try {
 		const result = await func()
+		if (result) console.log(result.replace(/(\n\n)+/, ""))
 		spinner[stopType]()
-		console.log(result)
 		
 	} catch(e) {
 		spinner.fail()
-		console.error(e.message)
+		throw e
 	}
 }
