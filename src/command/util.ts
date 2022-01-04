@@ -18,7 +18,7 @@ export const spinnerWrap = async (text, func, stopType = "stop") => {
 		if (result) console.log(result.replace(/(\n\n)+/, ""))
 		spinner[stopType]()
 		
-	} catch(e) {
+	} catch (e) {
 		spinner.fail()
 		throw e
 	}

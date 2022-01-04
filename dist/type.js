@@ -10,7 +10,7 @@ exports.Device = {
 exports.Platform = {
     "Windows": "Windows",
     "macOS": "macOS",
-    "Linux": "Linux"
+    "Linux": "Linux",
 };
 exports.Architecture = {
     "ARMv7": "ARMv7",

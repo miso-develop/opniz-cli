@@ -11,21 +11,19 @@ M5Stack、M5Stick-C、M5ATOM、ESP32をサポートしています。
 
 以下のコマンドで`./node_modules/opniz-cli/`へインストールされます。  
 
-またインストール時に`./node_modules/opniz-cli/arduino-cli/`へ[Arduino CLI](https://github.com/arduino/arduino-cli)のダウンロードと、ESP32書き込み環境をセットアップします。  
-そのためインストールに5分ほどかかり、約800MBほどストレージを消費します。  
+またインストール時に`~/.opniz-cli/`へ[Arduino CLI](https://github.com/arduino/arduino-cli)の環境をセットアップします。  
+そのためインストールに数分かかり、約800MBほどストレージを消費します。  
 
 ```sh
-$ npm install opniz-cli
+$ npm install -g opniz-cli
 ```
-
-> ※Windows環境にて43文字を超えるパス長のディレクトリにインストールするとupload時にエラーが発生します。内部でArduino CLIの環境構築を行う際にさらに深いディレクトリ階層が生成されWindowsのパス長制限を超えてしまっているようです。  
 
 
 
 ## 使い方
 
 ```sh
-$ npx opniz -h
+$ opniz -h
 Usage: index [options] [command]
 
 Options:
@@ -45,7 +43,7 @@ Commands:
 デバイスをPCへ接続した状態で実行するとボード情報（port等）が表示されます。
 
 ```sh
-$ npx opniz list
+$ opniz list
 Port Protocol Type    Board Name FQBN Core
 COM1 serial   Unknown
 ```
@@ -60,7 +58,7 @@ COM1 serial   Unknown
 * `<ADDRESS>`にopnizプログラムを実行するマシンのIPアドレスを指定します
 
 ```sh
-npx opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
+opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 ```
 
 上記の必須オプション以外にも任意のオプションがいくつかあります。
@@ -81,7 +79,7 @@ npx opniz upload <PORT> -s <SSID> -p <PASSWORD> -a <ADDRESS>
 `<PORT>`に`opniz list`で表示されるデバイスの`port`を指定します。  
 
 ```sh
-npx opniz monitor <PORT>
+opniz monitor <PORT>
 ```
 
 ### `arduino`: Arduino CLI直接実行
@@ -90,13 +88,13 @@ Arduino CLIを直接実行します。
 `<OPTIONS>`をダブルクォーテーションで括って実行します。  
 
 ```sh
-npx opniz arduino "<OPTIONS>"
+opniz arduino "<OPTIONS>"
 ```
 
 ```sh
 // example
-$ npx opniz arduino "version"
-$ npx opniz arduino "lib list"
+$ opniz arduino "version"
+$ opniz arduino "lib list"
 ```
 
 

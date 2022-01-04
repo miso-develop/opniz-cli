@@ -1,33 +1,33 @@
 import "zx/globals"
-import { cliPath } from "../config"
 import { spinnerWrap } from "./util"
 import { init } from "./init"
 import { upload } from "./upload"
+import { arduinoCliPath } from "../config"
 
 $.verbose = false
 process.chdir(__dirname + "/../../")
 
 const list = async (): Promise<void> => {
 	await spinnerWrap("Loading board list", async () => {
-		return (await $`${cliPath} board list`).stdout.replace(/(\n\n)+/, "")
+		return (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
 	})
 }
 
 const monitor = async (devicePort: string): Promise<void> => {
 	try {
-		await $`${cliPath} monitor --port ${devicePort}`.pipe(process.stdout)
-	} catch(e) {
+		await $`${arduinoCliPath} monitor --port ${devicePort}`.pipe(process.stdout)
+	} catch (e) {
 		// console.log(e.message)
 	}
 }
 
 const arduino = async (options: string): Promise<void> => {
 	try {
-		const command = `${cliPath} ${options}`
+		const command = `${arduinoCliPath} ${options}`
 		const pieces = [command] as any as TemplateStringsArray
 		await $(pieces).pipe(process.stdout)
 		
-	} catch(e) {
+	} catch (e) {
 		// console.log(e.message)
 	}
 }

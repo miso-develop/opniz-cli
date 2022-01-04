@@ -1,16 +1,12 @@
 import "zx/globals"
-import admZip from "adm-zip"
+import AdmZip from "adm-zip"
 import tar from "tar"
 import { init } from "./command/command"
+import { downloadPath, installPath } from "./config"
 import { Platform, Architecture, Extension } from "./type"
 
 $.verbose = false
 process.chdir(__dirname + "/../")
-
-const downloadPath = "./download"
-const installPath = "./arduino-cli/"
-
-
 
 const install = async (): Promise<void> => {
 	const { url, ext } = getUrl()
@@ -20,7 +16,7 @@ const install = async (): Promise<void> => {
 
 
 
-const getUrl = (): { url: string, ext: Extension } => {
+const getUrl = (): { url: string; ext: Extension } => {
 	// https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
 	// Linux,	32bit,	tar.gz
 	// Linux,	64bit,	tar.gz
@@ -33,20 +29,15 @@ const getUrl = (): { url: string, ext: Extension } => {
 	let platform = getPlatform()
 	let arch = getArch(platform)
 	let ext = getExt(platform)
-	const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}`
+	// const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}` // MEMO: latest
+	const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${ext}` // MEMO: 0.20.2
 	return { url, ext }
 }
 
 const getPlatform = (): Platform => {
 	// https://nodejs.org/api/process.html#processplatform
-	// "aix"
-	// "darwin"
-	// "freebsd"
-	// "linux"
-	// "openbsd"
-	// "sunos"
-	// "win32"
-	switch(os.platform()) {
+	// "aix", "darwin", "freebsd", "linux", "openbsd", "sunos", "win32"
+	switch (os.platform()) {
 		case "win32": return Platform["Windows"]
 		case "darwin": return Platform["macOS"]
 		case "linux": return Platform["Linux"]
@@ -59,18 +50,8 @@ const getArch = (platform: Platform): Architecture => {
 	if (platform === Platform["macOS"]) return Architecture["64bit"]
 	
 	// https://nodejs.org/api/process.html#processarch
-	// "arm"
-	// "arm64"
-	// "ia32"
-	// "mips"
-	// "mipsel"
-	// "ppc"
-	// "ppc64"
-	// "s390"
-	// "s390x"
-	// "x32"
-	// "x64"
-	switch(os.arch()) {
+	// "arm", "arm64", "ia32", "mips", "mipsel", "ppc", "ppc64", "s390", "s390x", "x32", "x64"
+	switch (os.arch()) {
 		case "arm": return Architecture["ARMv7"]
 		case "arm64": return Architecture["ARM64"]
 		case "x32": return Architecture["32bit"]
@@ -80,7 +61,7 @@ const getArch = (platform: Platform): Architecture => {
 }
 
 const getExt = (platform: Platform): Extension => {
-	switch(platform) {
+	switch (platform) {
 		case Platform["Windows"]: return Extension[".zip"]
 		case Platform["macOS"]: return Extension[".tar.gz"]
 		case Platform["Linux"]: return Extension[".tar.gz"]
@@ -94,10 +75,10 @@ const download = async (url: string): Promise<void> => {
 	const response = await fetch(url)
 	const downloadStream = response.body as any as NodeJS.ReadableStream
 	const fileStream = fs.createWriteStream(downloadPath)
+	
 	await new Promise((resolve, reject) => {
-		downloadStream.pipe(fileStream)
+		downloadStream.pipe(fileStream).on("finish", resolve)
 		downloadStream.on("error", reject)
-		fileStream.on("finish", resolve)
 	})
 }
 
@@ -105,19 +86,21 @@ const download = async (url: string): Promise<void> => {
 
 const extract = async (ext: Extension): Promise<void> => {
 	if (!fs.existsSync(installPath)) fs.mkdirSync(installPath)
-	if (ext === Extension[".zip"]) await extractZip()
-	if (ext === Extension[".tar.gz"]) await extractTarGz()
+	switch (ext) {
+		case Extension[".zip"]: await extractZip(); break
+		case Extension[".tar.gz"]: await extractTarGz(); break
+	}
 	fs.unlinkSync(downloadPath)
 }
 
 const extractZip = async (): Promise<void> => {
-	const zip = new admZip(downloadPath)
+	const zip = new AdmZip(downloadPath)
 	zip.extractAllTo(installPath, true)
-	fs.renameSync(installPath + "arduino-cli.exe", installPath + "arduino-cli")
+	fs.copyFileSync(`${installPath}/arduino-cli.exe`, `${installPath}/arduino-cli`)
 }
 
 const extractTarGz = async (): Promise<void> => {
-	var extractor = tar.x({ cwd: installPath })
+	let extractor = tar.x({ cwd: installPath })
 	await new Promise((resolve, reject) => {
 		fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve)
 	})
@@ -125,7 +108,7 @@ const extractTarGz = async (): Promise<void> => {
 
 
 
-; (async () => {
+~(async () => {
 	await install()
 	await init()
 })()

@@ -32,11 +32,11 @@ program.command("list")
 const validNumber = (value) => {
     const number = Number(value);
     if (!number)
-        throw new commander_1.InvalidArgumentError('Not a number.');
+        throw new commander_1.InvalidArgumentError("Not a number.");
     if (number < 1024)
-        throw new commander_1.InvalidArgumentError('WELL KNOWN PORT NUMBERS.');
+        throw new commander_1.InvalidArgumentError("WELL KNOWN PORT NUMBERS.");
     if (number > 65535)
-        throw new commander_1.InvalidArgumentError('Valid port number has been exceeded.');
+        throw new commander_1.InvalidArgumentError("Valid port number has been exceeded.");
     return number;
 };
 program.command("upload <device-port>")

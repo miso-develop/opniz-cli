@@ -147,4 +147,5 @@ dist
 ## prod
 !/dist
 
+.hooks
 .temp

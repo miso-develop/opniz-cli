@@ -16,11 +16,10 @@ require("zx/globals");
 const adm_zip_1 = __importDefault(require("adm-zip"));
 const tar_1 = __importDefault(require("tar"));
 const command_1 = require("./command/command");
+const config_1 = require("./config");
 const type_1 = require("./type");
 $.verbose = false;
 process.chdir(__dirname + "/../");
-const downloadPath = "./download";
-const installPath = "./arduino-cli/";
 const install = () => __awaiter(void 0, void 0, void 0, function* () {
     const { url, ext } = getUrl();
     yield download(url);
@@ -38,18 +37,13 @@ const getUrl = () => {
     let platform = getPlatform();
     let arch = getArch(platform);
     let ext = getExt(platform);
-    const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}`;
+    // const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}` // MEMO: latest
+    const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${ext}`; // MEMO: 0.20.2
     return { url, ext };
 };
 const getPlatform = () => {
     // https://nodejs.org/api/process.html#processplatform
-    // "aix"
-    // "darwin"
-    // "freebsd"
-    // "linux"
-    // "openbsd"
-    // "sunos"
-    // "win32"
+    // "aix", "darwin", "freebsd", "linux", "openbsd", "sunos", "win32"
     switch (os.platform()) {
         case "win32": return type_1.Platform["Windows"];
         case "darwin": return type_1.Platform["macOS"];
@@ -62,17 +56,7 @@ const getArch = (platform) => {
     if (platform === type_1.Platform["macOS"])
         return type_1.Architecture["64bit"];
     // https://nodejs.org/api/process.html#processarch
-    // "arm"
-    // "arm64"
-    // "ia32"
-    // "mips"
-    // "mipsel"
-    // "ppc"
-    // "ppc64"
-    // "s390"
-    // "s390x"
-    // "x32"
-    // "x64"
+    // "arm", "arm64", "ia32", "mips", "mipsel", "ppc", "ppc64", "s390", "s390x", "x32", "x64"
     switch (os.arch()) {
         case "arm": return type_1.Architecture["ARMv7"];
         case "arm64": return type_1.Architecture["ARM64"];
@@ -92,34 +76,37 @@ const getExt = (platform) => {
 const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(url);
     const downloadStream = response.body;
-    const fileStream = fs.createWriteStream(downloadPath);
+    const fileStream = fs.createWriteStream(config_1.downloadPath);
     yield new Promise((resolve, reject) => {
-        downloadStream.pipe(fileStream);
+        downloadStream.pipe(fileStream).on("finish", resolve);
         downloadStream.on("error", reject);
-        fileStream.on("finish", resolve);
     });
 });
 const extract = (ext) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!fs.existsSync(installPath))
-        fs.mkdirSync(installPath);
-    if (ext === type_1.Extension[".zip"])
-        yield extractZip();
-    if (ext === type_1.Extension[".tar.gz"])
-        yield extractTarGz();
-    fs.unlinkSync(downloadPath);
+    if (!fs.existsSync(config_1.installPath))
+        fs.mkdirSync(config_1.installPath);
+    switch (ext) {
+        case type_1.Extension[".zip"]:
+            yield extractZip();
+            break;
+        case type_1.Extension[".tar.gz"]:
+            yield extractTarGz();
+            break;
+    }
+    fs.unlinkSync(config_1.downloadPath);
 });
 const extractZip = () => __awaiter(void 0, void 0, void 0, function* () {
-    const zip = new adm_zip_1.default(downloadPath);
-    zip.extractAllTo(installPath, true);
-    fs.renameSync(installPath + "arduino-cli.exe", installPath + "arduino-cli");
+    const zip = new adm_zip_1.default(config_1.downloadPath);
+    zip.extractAllTo(config_1.installPath, true);
+    fs.copyFileSync(`${config_1.installPath}/arduino-cli.exe`, `${config_1.installPath}/arduino-cli`);
 });
 const extractTarGz = () => __awaiter(void 0, void 0, void 0, function* () {
-    var extractor = tar_1.default.x({ cwd: installPath });
+    let extractor = tar_1.default.x({ cwd: config_1.installPath });
     yield new Promise((resolve, reject) => {
-        fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve);
+        fs.createReadStream(config_1.downloadPath).pipe(extractor).on("finish", resolve);
     });
 });
-(() => __awaiter(void 0, void 0, void 0, function* () {
+~(() => __awaiter(void 0, void 0, void 0, function* () {
     yield install();
     yield (0, command_1.init)();
 }))();

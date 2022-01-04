@@ -9,7 +9,7 @@ export type Device = typeof Device[keyof typeof Device]
 export const Platform = {
 	"Windows": "Windows",
 	"macOS": "macOS",
-	"Linux": "Linux"
+	"Linux": "Linux",
 }
 export type Platform = typeof Platform[keyof typeof Platform]
 
@@ -26,3 +26,16 @@ export const Extension = {
 	".tar.gz": ".tar.gz",
 }
 export type Extension = typeof Extension[keyof typeof Extension]
+
+
+
+export type DeviceInfoList = {
+	[key in Device]: DeviceInfo
+}
+
+export type DeviceInfo = {
+	fqbn: string
+	sketch: string
+	library: string
+	repo: string
+}

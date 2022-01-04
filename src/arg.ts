@@ -10,12 +10,12 @@ program.version(version, "-v, --version", "バージョンを表示します。"
 
 // MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
 program.command("init", { hidden: true })
-.description("opniz書き込み環境を構築します。")
-.addHelpCommand(false)
-.action(async (options) => {
-	// console.log(options)
-	await init()
-})
+	.description("opniz書き込み環境を構築します。")
+	.addHelpCommand(false)
+	.action(async (options) => {
+		// console.log(options)
+		await init()
+	})
 
 program.command("list")
 	.description("接続されているデバイス情報を表示します。")
@@ -26,9 +26,9 @@ program.command("list")
 
 const validNumber = (value: string): number => {
 	const number = Number(value)
-	if (!number) throw new InvalidArgumentError('Not a number.')
-	if (number < 1024) throw new InvalidArgumentError('WELL KNOWN PORT NUMBERS.')
-	if (number > 65535) throw new InvalidArgumentError('Valid port number has been exceeded.')
+	if (!number) throw new InvalidArgumentError("Not a number.")
+	if (number < 1024) throw new InvalidArgumentError("WELL KNOWN PORT NUMBERS.")
+	if (number > 65535) throw new InvalidArgumentError("Valid port number has been exceeded.")
 	return number
 }
 
