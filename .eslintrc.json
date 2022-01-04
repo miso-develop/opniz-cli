@@ -4,14 +4,12 @@
 		"plugin:@typescript-eslint/recommended"
 	],
 	"plugins": [
-		"@typescript-eslint",
-		"jest"
+		"@typescript-eslint"
 	],
 	"parser": "@typescript-eslint/parser",
 	"env": {
 		"node": true,
-		"es6": true,
-		"jest/globals": true
+		"es6": true
 	},
 	"rules": {
 		"semi": ["error", "never", {"beforeStatementContinuationChars": "never"}],
