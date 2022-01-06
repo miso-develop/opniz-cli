@@ -139,13 +139,12 @@ dist
 # opniz-cli
 /arduino-cli
 /arduino-cli.yaml
-/d
-/dl
-/u
 /sketch
 
 ## prod
 !/dist
+/dist/**/*.map
+/dist/**/*.ts
 
 .hooks
 .temp

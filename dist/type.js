@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Extension = exports.Architecture = exports.Platform = exports.Device = void 0;
 exports.Device = {
-    "esp32": "esp32",
     "m5atom": "m5atom",
     "m5stickc": "m5stickc",
     "m5stack": "m5stack",
+    "esp32": "esp32",
 };
 exports.Platform = {
     "Windows": "Windows",

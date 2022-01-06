@@ -1,14 +1,10 @@
 import "zx/globals"
 import AdmZip from "adm-zip"
 import tar from "tar"
-import { init } from "./command/command"
-import { downloadPath, installPath } from "./config"
-import { Platform, Architecture, Extension } from "./type"
+import { downloadPath, installPath } from "../../config"
+import { Platform, Architecture, Extension } from "../../type"
 
-$.verbose = false
-process.chdir(__dirname + "/../")
-
-const install = async (): Promise<void> => {
+export const install = async (): Promise<void> => {
 	const { url, ext } = getUrl()
 	await download(url)
 	await extract(ext)
@@ -105,10 +101,3 @@ const extractTarGz = async (): Promise<void> => {
 		fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve)
 	})
 }
-
-
-
-~(async () => {
-	await install()
-	await init()
-})()

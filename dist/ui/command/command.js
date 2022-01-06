@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.arduino = exports.monitor = exports.list = exports.upload = exports.init = void 0;
 require("zx/globals");
-const util_1 = require("./util");
+const util_1 = require("../util");
 const init_1 = require("./init");
 Object.defineProperty(exports, "init", { enumerable: true, get: function () { return init_1.init; } });
 const upload_1 = require("./upload");
 Object.defineProperty(exports, "upload", { enumerable: true, get: function () { return upload_1.upload; } });
-const config_1 = require("../config");
+const config_1 = require("../../config");
 $.verbose = false;
 process.chdir(__dirname + "/../../");
 const list = () => __awaiter(void 0, void 0, void 0, function* () {

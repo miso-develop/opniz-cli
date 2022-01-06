@@ -1,8 +1,8 @@
 import "zx/globals"
-import { spinnerWrap } from "./util"
+import { spinnerWrap } from "../util"
 import { init } from "./init"
 import { upload } from "./upload"
-import { arduinoCliPath } from "../config"
+import { arduinoCliPath } from "../../config"
 
 $.verbose = false
 process.chdir(__dirname + "/../../")

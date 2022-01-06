@@ -1,10 +1,10 @@
 import "zx/globals"
-import { retryCommand, spinnerWrap } from "./util"
-import { arduinoCliPath, deviceInfoList } from "../config"
-import { Device, DeviceInfo } from "../type"
+import { retryCommand, spinnerWrap } from "../util"
+import { arduinoCliPath, deviceInfoList } from "../../config"
+import { Device, DeviceInfo } from "../../type"
 
 $.verbose = false
-process.chdir(__dirname + "/../../")
+process.chdir(__dirname + "/../../../")
 
 const sketchDir = "sketch"
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`
@@ -20,17 +20,23 @@ export const upload = async (
 ): Promise<void> => {
 	const deviceInfo: DeviceInfo = deviceInfoList[device]
 	
-	await spinnerWrap(`Create sketch`, async () => {
-		await Promise.all([
-			createSketch(ssid, password, address, port, id, deviceInfo.sketch),
-			installDeviceLibrary(deviceInfo.library),
-			installOpniz(deviceInfo.repo),
-		])
-	}, "succeed")
-	
-	await uploadSketch(devicePort, deviceInfo.fqbn)
-	
-	fs.removeSync(sketchDir)
+	try {
+		await spinnerWrap(`Create sketch`, async () => {
+			await createSketch(ssid, password, address, port, id, deviceInfo.sketch)
+		}, "succeed")
+		
+		await spinnerWrap(`Install library`, async () => {
+			await Promise.all([
+				installDeviceLibrary(deviceInfo.library),
+				installOpniz(deviceInfo.repo),
+			])
+		}, "succeed")
+		
+		await uploadSketch(devicePort, deviceInfo.fqbn)
+		
+	} finally {
+		fs.removeSync(sketchDir)
+	}
 }
 
 const uploadSketch = async (devicePort: string, fqbn: string) => {
@@ -67,9 +73,9 @@ const createSketch = async (
 
 const installDeviceLibrary = async (library: string): Promise<void> => {
 	if (library === "") return
-	await retryCommand(`${arduinoCliPath} lib install ${library}`, 10)
+	await retryCommand(`${arduinoCliPath} lib install ${library}`, 1)
 }
 
 const installOpniz = async (repo: string): Promise<void> => {
-	await retryCommand(`${arduinoCliPath} lib install --git-url ${repo}`, 10)
+	await retryCommand(`${arduinoCliPath} lib install --git-url ${repo}`, 1)
 }

@@ -1,3 +1,4 @@
 #!/usr/bin/env node
 "use strict";
-require("./arg");
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./ui/argParser");

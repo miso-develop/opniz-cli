@@ -1,8 +1,8 @@
 export const Device = {
-	"esp32": "esp32",
 	"m5atom": "m5atom",
 	"m5stickc": "m5stickc",
 	"m5stack": "m5stack",
+	"esp32": "esp32",
 }
 export type Device = typeof Device[keyof typeof Device]
 

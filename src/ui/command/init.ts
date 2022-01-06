@@ -1,9 +1,9 @@
 import "zx/globals"
-import { retryCommand } from "./util"
-import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath } from "../config"
+import { retryCommand } from "../util"
+import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath } from "../../config"
 
 $.verbose = false
-process.chdir(__dirname + "/../../")
+process.chdir(__dirname + "/../../../")
 
 export const init = async () => {
 	// $.verbose = true // DEBUG:

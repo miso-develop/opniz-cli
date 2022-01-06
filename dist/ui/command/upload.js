@@ -11,23 +11,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upload = void 0;
 require("zx/globals");
-const util_1 = require("./util");
-const config_1 = require("../config");
+const util_1 = require("../util");
+const config_1 = require("../../config");
 $.verbose = false;
-process.chdir(__dirname + "/../../");
+process.chdir(__dirname + "/../../../");
 const sketchDir = "sketch";
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`;
 const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
     const deviceInfo = config_1.deviceInfoList[device];
-    yield (0, util_1.spinnerWrap)(`Create sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
-        yield Promise.all([
-            createSketch(ssid, password, address, port, id, deviceInfo.sketch),
-            installDeviceLibrary(deviceInfo.library),
-            installOpniz(deviceInfo.repo),
-        ]);
-    }), "succeed");
-    yield uploadSketch(devicePort, deviceInfo.fqbn);
-    fs.removeSync(sketchDir);
+    try {
+        yield (0, util_1.spinnerWrap)(`Create sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield createSketch(ssid, password, address, port, id, deviceInfo.sketch);
+        }), "succeed");
+        yield (0, util_1.spinnerWrap)(`Install library`, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield Promise.all([
+                installDeviceLibrary(deviceInfo.library),
+                installOpniz(deviceInfo.repo),
+            ]);
+        }), "succeed");
+        yield uploadSketch(devicePort, deviceInfo.fqbn);
+    }
+    finally {
+        fs.removeSync(sketchDir);
+    }
 });
 exports.upload = upload;
 const uploadSketch = (devicePort, fqbn) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,8 +60,8 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
 const installDeviceLibrary = (library) => __awaiter(void 0, void 0, void 0, function* () {
     if (library === "")
         return;
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install ${library}`, 10);
+    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install ${library}`, 1);
 });
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`, 10);
+    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`, 1);
 });

@@ -11,11 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
 const command_1 = require("./command/command");
+const prompt_1 = require("./prompt");
 const program = new commander_1.Command();
 program.helpOption("-h, --help", "コマンドのヘルプを表示します。");
-const version = "v" + require("../package.json").version;
+const version = "v" + require("../../package.json").version;
 program.version(version, "-v, --version", "バージョンを表示します。");
-// MEMO: install時に実行してるのでコマンドとしてはなくて良さげ
+// MEMO: install時に実行してるのでhelpには出さない隠しコマンド
 program.command("init", { hidden: true })
     .description("opniz書き込み環境を構築します。")
     .addHelpCommand(false)
@@ -23,43 +24,31 @@ program.command("init", { hidden: true })
     // console.log(options)
     yield (0, command_1.init)();
 }));
+program.command("upload [device-port]")
+    .description("デバイスへopnizを書き込みます。")
+    .option("-s, --ssid <ssid>", "デバイスを接続するWi-FiのSSIDを指定します。")
+    .option("-p, --password <password>", "デバイスを接続するWi-Fiのパスワードを指定します。")
+    .option("-a, --address <address>", "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を指定します。")
+    .option("-d, --device <device>", "デバイスを指定します。(choices: \"m5atom\", \"m5stickc\", \"m5stack\", \"esp32\")")
+    .option("-P, --port <port>", "opnizプログラムの通信ポート番号を指定します。")
+    .option("-i, --id <id>", "opniz IDを指定します。")
+    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(devicePort, options)
+    const answers = yield (0, prompt_1.uploadPrompt)(Object.assign({ devicePort }, options));
+    yield (0, command_1.upload)(answers.devicePort, answers.ssid, answers.password, answers.address, answers.port, answers.id, answers.device);
+}));
+program.command("monitor [device-port]")
+    .description("シリアルモニタを表示します。")
+    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(devicePort, options)
+    const answers = yield (0, prompt_1.monitorPrompt)({ devicePort });
+    yield (0, command_1.monitor)(answers.devicePort);
+}));
 program.command("list")
     .description("接続されているデバイス情報を表示します。")
     .action((options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(options)
     yield (0, command_1.list)();
-}));
-const validNumber = (value) => {
-    const number = Number(value);
-    if (!number)
-        throw new commander_1.InvalidArgumentError("Not a number.");
-    if (number < 1024)
-        throw new commander_1.InvalidArgumentError("WELL KNOWN PORT NUMBERS.");
-    if (number > 65535)
-        throw new commander_1.InvalidArgumentError("Valid port number has been exceeded.");
-    return number;
-};
-program.command("upload <device-port>")
-    .description("デバイスへopnizを書き込みます。")
-    .requiredOption("-s, --ssid <ssid>", "デバイスを接続するWi-FiのSSIDを指定します。")
-    .requiredOption("-p, --password <password>", "デバイスを接続するWi-Fiのパスワードを指定します。")
-    .requiredOption("-a, --address <address>", "デバイスを制御するopnizプログラム実行マシンまたはopnizサーバのIPアドレスまたはホスト名、ドメイン名を指定します。")
-    .addOption(new commander_1.Option("-P, --port <port>", "デバイスを制御するopnizプログラム実行マシンまたはopnizサーバのポート番号を指定します。")
-    .default("3000")
-    .argParser(validNumber))
-    .option("-i, --id <id>", "opniz IDを指定します。", "")
-    .addOption(new commander_1.Option("-d, --device <device>", "デバイス種別を指定します。")
-    .default("m5atom")
-    .choices(["esp32", "m5atom", "m5stickc", "m5stack"]))
-    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(devicePort, options)
-    yield (0, command_1.upload)(devicePort, options.ssid, options.password, options.address, Number(options.port), options.id, options.device);
-}));
-program.command("monitor <device-port>")
-    .description("シリアルモニタを表示します。")
-    .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(devicePort, options)
-    yield (0, command_1.monitor)(devicePort);
 }));
 program.command("arduino [\"options\"]")
     .description("Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino \"version\"）")

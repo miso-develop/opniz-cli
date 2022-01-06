@@ -11,10 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = void 0;
 require("zx/globals");
-const util_1 = require("./util");
-const config_1 = require("../config");
+const util_1 = require("../util");
+const config_1 = require("../../config");
 $.verbose = false;
-process.chdir(__dirname + "/../../");
+process.chdir(__dirname + "/../../../");
 const init = () => __awaiter(void 0, void 0, void 0, function* () {
     // $.verbose = true // DEBUG:
     yield initConfig();

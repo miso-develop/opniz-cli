@@ -12,19 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.install = void 0;
 require("zx/globals");
 const adm_zip_1 = __importDefault(require("adm-zip"));
 const tar_1 = __importDefault(require("tar"));
-const command_1 = require("./command/command");
-const config_1 = require("./config");
-const type_1 = require("./type");
-$.verbose = false;
-process.chdir(__dirname + "/../");
+const config_1 = require("../../config");
+const type_1 = require("../../type");
 const install = () => __awaiter(void 0, void 0, void 0, function* () {
     const { url, ext } = getUrl();
     yield download(url);
     yield extract(ext);
 });
+exports.install = install;
 const getUrl = () => {
     // https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
     // Linux,	32bit,	tar.gz
@@ -106,7 +105,3 @@ const extractTarGz = () => __awaiter(void 0, void 0, void 0, function* () {
         fs.createReadStream(config_1.downloadPath).pipe(extractor).on("finish", resolve);
     });
 });
-~(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield install();
-    yield (0, command_1.init)();
-}))();
