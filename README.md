@@ -49,7 +49,12 @@ Commands:
 opniz upload
 ```
 
+<img src="https://user-images.githubusercontent.com/22117028/148371155-569e2ae3-7655-4c5c-a38f-4d13dd1ada4b.gif" width="640">
+
+リストにない値を指定したい場合は`Other`を選択することで直接入力できます。  
+
 また以下のようにオプション指定することで対話モードをスキップして実行できます。  
+部分的なオプション指定も可能です。  
 
 ```sh
 opniz upload <device-port> -s <ssid> -p <password> -a <address> -d <device> -P 3000

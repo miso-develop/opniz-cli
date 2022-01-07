@@ -86,18 +86,18 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 			name: "devicePort",
 			type: "list",
 			choices: await getPortList(),
-			message: "デバイスのシリアルポートを選択してください: ",
+			message: "デバイスのシリアルポートを選択してください:",
 		})
 		
 		if (!options.ssid) questions.push({
 			name: "ssid",
 			type: "list",
 			choices: await getSsidList(),
-			message: "デバイスを接続するWi-FiのSSIDを選択してください: ",
+			message: "デバイスを接続するWi-FiのSSIDを選択してください:",
 		}, {
 			name: "ssidInput",
 			type: "input",
-			message: "デバイスを接続するWi-FiのSSIDを入力してください: ",
+			message: "デバイスを接続するWi-FiのSSIDを入力してください:",
 			validate: input => input !== "" || "値を入力してください！",
 			when: (answers) => answers.ssid === "Other",
 		})
@@ -106,7 +106,7 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 			name: "password",
 			type: "password",
 			mask: "*",
-			message: "デバイスを接続するWi-Fiのパスワードを入力してください: ",
+			message: "デバイスを接続するWi-Fiのパスワードを入力してください:",
 			validate: input => input !== "" || "値を入力してください！",
 		})
 		
@@ -114,11 +114,11 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 			name: "address",
 			type: "list",
 			choices: await getAddressList(),
-			message: "opnizプログラム実行マシンのIPアドレスを選択してください: ",
+			message: "opnizプログラム実行マシンのIPアドレスを選択してください:",
 		}, {
 			name: "addressInput",
 			type: "input",
-			message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください: ",
+			message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください:",
 			validate: input => input !== "" || "値を入力してください！",
 			when: (answers) => answers.address === "Other",
 		})
@@ -128,14 +128,14 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 			type: "list",
 			choices: deviceList,
 			default: "m5atom",
-			message: "デバイスを選択してください: ",
+			message: "デバイスを選択してください:",
 		})
 		
 		if (!options.port || !validPortNumber(options.port)) questions.push({
 			name: "port",
 			type: "input",
 			default: 3000,
-			message: "opnizプログラムの通信ポート番号を入力してください: ",
+			message: "opnizプログラムの通信ポート番号を入力してください:",
 			validate: validPromptPortNumber,
 		})
 		
@@ -144,7 +144,7 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 		// 	name: "id",
 		// 	type: "input",
 		// 	default: "\"\"",
-		// 	message: "opniz IDを入力してください: ",
+		// 	message: "opniz IDを入力してください:",
 		// })
 	})
 	return questions
@@ -157,7 +157,7 @@ const setMonitorQuestions = async (options): Promise<inquirer.QuestionCollection
 			name: "devicePort",
 			type: "list",
 			choices: await getPortList(),
-			message: "デバイスのシリアルポートを選択してください: ",
+			message: "デバイスのシリアルポートを選択してください:",
 		})
 	})
 	return questions

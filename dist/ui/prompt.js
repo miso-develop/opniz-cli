@@ -90,18 +90,18 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
                 name: "devicePort",
                 type: "list",
                 choices: yield getPortList(),
-                message: "デバイスのシリアルポートを選択してください: ",
+                message: "デバイスのシリアルポートを選択してください:",
             });
         if (!options.ssid)
             questions.push({
                 name: "ssid",
                 type: "list",
                 choices: yield getSsidList(),
-                message: "デバイスを接続するWi-FiのSSIDを選択してください: ",
+                message: "デバイスを接続するWi-FiのSSIDを選択してください:",
             }, {
                 name: "ssidInput",
                 type: "input",
-                message: "デバイスを接続するWi-FiのSSIDを入力してください: ",
+                message: "デバイスを接続するWi-FiのSSIDを入力してください:",
                 validate: input => input !== "" || "値を入力してください！",
                 when: (answers) => answers.ssid === "Other",
             });
@@ -110,7 +110,7 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
                 name: "password",
                 type: "password",
                 mask: "*",
-                message: "デバイスを接続するWi-Fiのパスワードを入力してください: ",
+                message: "デバイスを接続するWi-Fiのパスワードを入力してください:",
                 validate: input => input !== "" || "値を入力してください！",
             });
         if (!options.address)
@@ -118,11 +118,11 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
                 name: "address",
                 type: "list",
                 choices: yield getAddressList(),
-                message: "opnizプログラム実行マシンのIPアドレスを選択してください: ",
+                message: "opnizプログラム実行マシンのIPアドレスを選択してください:",
             }, {
                 name: "addressInput",
                 type: "input",
-                message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください: ",
+                message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください:",
                 validate: input => input !== "" || "値を入力してください！",
                 when: (answers) => answers.address === "Other",
             });
@@ -132,14 +132,14 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
                 type: "list",
                 choices: deviceList,
                 default: "m5atom",
-                message: "デバイスを選択してください: ",
+                message: "デバイスを選択してください:",
             });
         if (!options.port || !validPortNumber(options.port))
             questions.push({
                 name: "port",
                 type: "input",
                 default: 3000,
-                message: "opnizプログラムの通信ポート番号を入力してください: ",
+                message: "opnizプログラムの通信ポート番号を入力してください:",
                 validate: validPromptPortNumber,
             });
         // MEMO: ユースケースが限られるので対話モードからは除外
@@ -147,7 +147,7 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
         // 	name: "id",
         // 	type: "input",
         // 	default: "\"\"",
-        // 	message: "opniz IDを入力してください: ",
+        // 	message: "opniz IDを入力してください:",
         // })
     }));
     return questions;
@@ -160,7 +160,7 @@ const setMonitorQuestions = (options) => __awaiter(void 0, void 0, void 0, funct
                 name: "devicePort",
                 type: "list",
                 choices: yield getPortList(),
-                message: "デバイスのシリアルポートを選択してください: ",
+                message: "デバイスのシリアルポートを選択してください:",
             });
     }));
     return questions;

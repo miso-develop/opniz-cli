@@ -63,4 +63,3 @@ const installDeviceLibrary = (library) => __awaiter(void 0, void 0, void 0, func
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
     return (yield $((0, util_1.zxFormat)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`))).stdout;
 });
-//# sourceMappingURL=upload.js.map
