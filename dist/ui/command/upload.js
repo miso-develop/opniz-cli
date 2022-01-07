@@ -46,11 +46,11 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
     const templateSketch = sketch;
     const templateSketchPath = `./template/${templateSketch}`;
     let sketchSource = fs.readFileSync(templateSketchPath, "utf-8");
-    sketchSource = sketchSource.replace("<SSID>", ssid);
-    sketchSource = sketchSource.replace("<PASSWORD>", password);
-    sketchSource = sketchSource.replace("<ADDRESS>", address);
-    sketchSource = sketchSource.replace("<PORT>", String(port));
-    sketchSource = sketchSource.replace("<ID>", id);
+    sketchSource = sketchSource.replace(/<SSID>/g, ssid);
+    sketchSource = sketchSource.replace(/<PASSWORD>/g, password);
+    sketchSource = sketchSource.replace(/<ADDRESS>/g, address);
+    sketchSource = sketchSource.replace(/<PORT>/g, String(port));
+    sketchSource = sketchSource.replace(/<ID>/g, id);
     if (!fs.existsSync(sketchDir))
         fs.mkdirSync(sketchDir);
     fs.writeFileSync(sketchPath, sketchSource);
