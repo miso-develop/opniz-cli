@@ -12,10 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spinnerWrap = exports.retryCommand = void 0;
+exports.spinnerWrap = exports.retryCommand = exports.zxFormat = void 0;
 const ora_1 = __importDefault(require("ora"));
+const zxFormat = (templateStrings) => [templateStrings];
+exports.zxFormat = zxFormat;
 const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, function* () {
-    const pieces = [command];
+    const pieces = (0, exports.zxFormat)(command);
     let count = 0;
     while (count < max) {
         if (count > 0)

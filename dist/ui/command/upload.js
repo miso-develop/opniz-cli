@@ -20,9 +20,7 @@ const sketchPath = `./${sketchDir}/${sketchDir}.ino`;
 const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
     const deviceInfo = config_1.deviceInfoList[device];
     try {
-        yield (0, util_1.spinnerWrap)(`Create sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
-            yield createSketch(ssid, password, address, port, id, deviceInfo.sketch);
-        }), "succeed");
+        yield createSketch(ssid, password, address, port, id, deviceInfo.sketch);
         yield (0, util_1.spinnerWrap)(`Install library`, () => __awaiter(void 0, void 0, void 0, function* () {
             yield Promise.all([
                 installDeviceLibrary(deviceInfo.library),
@@ -60,8 +58,9 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
 const installDeviceLibrary = (library) => __awaiter(void 0, void 0, void 0, function* () {
     if (library === "")
         return;
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install ${library}`, 1);
+    return (yield $((0, util_1.zxFormat)(`${config_1.arduinoCliPath} lib install ${library}`))).stdout;
 });
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`, 1);
+    return (yield $((0, util_1.zxFormat)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`))).stdout;
 });
+//# sourceMappingURL=upload.js.map

@@ -1,7 +1,9 @@
 import ora from "ora"
 
+export const zxFormat = (templateStrings: string) => [templateStrings] as any as TemplateStringsArray
+
 export const retryCommand = async (command: string, max: number): Promise<void> => {
-	const pieces = [command] as any as TemplateStringsArray
+	const pieces = zxFormat(command)
 	let count = 0
 	while (count < max) {
 		if (count > 0) console.log("retry:", count, command) // debug:

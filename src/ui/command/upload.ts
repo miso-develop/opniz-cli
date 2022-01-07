@@ -1,5 +1,5 @@
 import "zx/globals"
-import { retryCommand, spinnerWrap } from "../util"
+import { zxFormat, spinnerWrap } from "../util"
 import { arduinoCliPath, deviceInfoList } from "../../config"
 import { Device, DeviceInfo } from "../../type"
 
@@ -21,9 +21,7 @@ export const upload = async (
 	const deviceInfo: DeviceInfo = deviceInfoList[device]
 	
 	try {
-		await spinnerWrap(`Create sketch`, async () => {
-			await createSketch(ssid, password, address, port, id, deviceInfo.sketch)
-		}, "succeed")
+		await createSketch(ssid, password, address, port, id, deviceInfo.sketch)
 		
 		await spinnerWrap(`Install library`, async () => {
 			await Promise.all([
@@ -71,11 +69,11 @@ const createSketch = async (
 	fs.writeFileSync(sketchPath, sketchSource)
 }
 
-const installDeviceLibrary = async (library: string): Promise<void> => {
+const installDeviceLibrary = async (library: string): Promise<string | void> => {
 	if (library === "") return
-	await retryCommand(`${arduinoCliPath} lib install ${library}`, 1)
+	return (await $(zxFormat(`${arduinoCliPath} lib install ${library}`))).stdout
 }
 
-const installOpniz = async (repo: string): Promise<void> => {
-	await retryCommand(`${arduinoCliPath} lib install --git-url ${repo}`, 1)
+const installOpniz = async (repo: string): Promise<string | void> => {
+	return (await $(zxFormat(`${arduinoCliPath} lib install --git-url ${repo}`))).stdout
 }
