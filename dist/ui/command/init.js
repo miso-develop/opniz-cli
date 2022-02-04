@@ -38,7 +38,7 @@ const initConfig = () => __awaiter(void 0, void 0, void 0, function* () {
 const installCore = () => __awaiter(void 0, void 0, void 0, function* () {
     // MEMO: なくても良さげかつ`lib update-index`がM1 macでエラーで止まったので同様にコメントアウト
     // await $`${arduinoCliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} core install esp32:esp32`, 50); // ESP32ボードパッケージインストール
+    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} core install esp32:esp32@1.0.6`, 50); // ESP32ボードパッケージインストール
 });
 const installLibrary = () => __awaiter(void 0, void 0, void 0, function* () {
     // MEMO: なくても良さげかつM1 macでエラーで止まったのでコメントアウト

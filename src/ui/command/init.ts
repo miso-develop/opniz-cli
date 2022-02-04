@@ -31,7 +31,7 @@ const installCore = async (): Promise<void> => {
 	// MEMO: なくても良さげかつ`lib update-index`がM1 macでエラーで止まったので同様にコメントアウト
 	// await $`${arduinoCliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
 	
-	await retryCommand(`${arduinoCliPath} core install esp32:esp32`, 50) // ESP32ボードパッケージインストール
+	await retryCommand(`${arduinoCliPath} core install esp32:esp32@1.0.6`, 50) // ESP32ボードパッケージインストール
 }
 
 const installLibrary = async (): Promise<void> => {
