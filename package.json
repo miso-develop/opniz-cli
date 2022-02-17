@@ -22,7 +22,7 @@
 		"opniz": "dist/index.js"
 	},
 	"engines": {
-		"node": ">=12.x"
+		"node": ">=15.x"
 	},
 	"files": [
 		"dist",
