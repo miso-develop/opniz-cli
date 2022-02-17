@@ -8,7 +8,7 @@ export const installPath = `${opnizRoot}/arduino-cli`
 export const arduinoCliPath = `${installPath}/arduino-cli`
 export const arduinoConfigPath = `${opnizRoot}/arduino-cli.yaml`
 
-export const opnizHomePath = `${os.homedir().replaceAll("\\", "/")}/.opniz-cli`
+export const opnizHomePath = `${os.homedir().replace(/\\/g, "/")}/.opniz-cli`
 export const arduinoDirsPath = `${opnizHomePath}/arduino-cli`
 
 

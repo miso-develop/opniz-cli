@@ -7,7 +7,7 @@ exports.downloadPath = `${exports.opnizRoot}/download`;
 exports.installPath = `${exports.opnizRoot}/arduino-cli`;
 exports.arduinoCliPath = `${exports.installPath}/arduino-cli`;
 exports.arduinoConfigPath = `${exports.opnizRoot}/arduino-cli.yaml`;
-exports.opnizHomePath = `${os.homedir().replaceAll("\\", "/")}/.opniz-cli`;
+exports.opnizHomePath = `${os.homedir().replace(/\\/g, "/")}/.opniz-cli`;
 exports.arduinoDirsPath = `${exports.opnizHomePath}/arduino-cli`;
 exports.deviceInfoList = {
     [type_1.Device.esp32]: {
