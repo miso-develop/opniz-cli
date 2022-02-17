@@ -23,9 +23,11 @@ const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, functio
         if (count > 0)
             console.log("retry:", count, command); // debug:
         count++;
-        if ((yield $(pieces).exitCode) === 0)
-            return;
+        const result = yield $(pieces);
+        if (result.exitCode === 0)
+            return result.stdout;
     }
+    throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`);
 });
 exports.retryCommand = retryCommand;
 const spinnerWrap = (text, func, stopType = "stop") => __awaiter(void 0, void 0, void 0, function* () {
