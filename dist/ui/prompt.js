@@ -39,7 +39,7 @@ const monitorPrompt = (options) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.monitorPrompt = monitorPrompt;
 const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = (yield $ `${config_1.arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "");
+    const result = (yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} board list`, 10)).replace(/(\n\n)+/, "");
     const portList = result
         .split("\n")
         .map(line => line.split(" ")[0])

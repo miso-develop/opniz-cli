@@ -1,5 +1,5 @@
 import "zx/globals"
-import { spinnerWrap } from "../util"
+import { spinnerWrap, retryCommand } from "../util"
 import { init } from "./init"
 import { upload } from "./upload"
 import { arduinoCliPath } from "../../config"
@@ -9,7 +9,7 @@ process.chdir(__dirname + "/../../")
 
 const list = async (): Promise<void> => {
 	await spinnerWrap("Loading board list", async () => {
-		return (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
+		return (await retryCommand(`${arduinoCliPath} board list`, 10)).replace(/(\n\n)+/, "")
 	})
 }
 
