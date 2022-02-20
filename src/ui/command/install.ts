@@ -2,32 +2,24 @@ import "zx/globals"
 import AdmZip from "adm-zip"
 import tar from "tar"
 import { downloadPath, installPath } from "../../config"
-import { Platform, Architecture, Extension } from "../../type"
+import { OSInfo, Platform, Architecture, Extension } from "../../type"
 
 export const install = async (): Promise<void> => {
-	const { url, ext } = getUrl()
+	const osInfo = getOSInfo()
+	const url = getUrl(osInfo)
 	await download(url)
-	await extract(ext)
+	await extract(osInfo.extension)
 }
 
 
 
-const getUrl = (): { url: string; ext: Extension } => {
-	// https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
-	// Linux,	32bit,	tar.gz
-	// Linux,	64bit,	tar.gz
-	// Linux,	ARMv7,	tar.gz
-	// Linux,	ARM64,	tar.gz
-	// Windows,	32bit,	zip
-	// Windows,	64bit,	zip
-	// macOS,	64bit,	tar.gz
-	
-	let platform = getPlatform()
-	let arch = getArch(platform)
-	let ext = getExt(platform)
-	// const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${ext}` // MEMO: latest
-	const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${ext}` // MEMO: 0.20.2
-	return { url, ext }
+const getOSInfo = (): OSInfo => {
+	const platform = getPlatform()
+	return {
+		platform,
+		arch: getArch(platform),
+		extension: getExtension(platform),
+	}
 }
 
 const getPlatform = (): Platform => {
@@ -56,13 +48,30 @@ const getArch = (platform: Platform): Architecture => {
 	}
 }
 
-const getExt = (platform: Platform): Extension => {
+const getExtension = (platform: Platform): Extension => {
 	switch (platform) {
 		case Platform["Windows"]: return Extension[".zip"]
 		case Platform["macOS"]: return Extension[".tar.gz"]
 		case Platform["Linux"]: return Extension[".tar.gz"]
 		default: return Extension[".tar.gz"]
 	}
+}
+
+
+
+const getUrl = ({platform, arch, extension}: OSInfo): string => {
+	// https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
+	// Linux,	32bit,	tar.gz
+	// Linux,	64bit,	tar.gz
+	// Linux,	ARMv7,	tar.gz
+	// Linux,	ARM64,	tar.gz
+	// Windows,	32bit,	zip
+	// Windows,	64bit,	zip
+	// macOS,	64bit,	tar.gz
+	
+	// return `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${extension}` // MEMO: latest
+	// return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${extension}` // MEMO: 0.20.2
+	return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
 }
 
 
@@ -80,9 +89,9 @@ const download = async (url: string): Promise<void> => {
 
 
 
-const extract = async (ext: Extension): Promise<void> => {
+const extract = async (extension: Extension): Promise<void> => {
 	if (!fs.existsSync(installPath)) fs.mkdirSync(installPath)
-	switch (ext) {
+	switch (extension) {
 		case Extension[".zip"]: await extractZip(); break
 		case Extension[".tar.gz"]: await extractTarGz(); break
 	}

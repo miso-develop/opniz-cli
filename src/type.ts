@@ -6,6 +6,14 @@ export const Device = {
 }
 export type Device = typeof Device[keyof typeof Device]
 
+
+
+export type OSInfo = {
+	platform: Platform
+	arch: Architecture
+	extension: Extension
+}
+
 export const Platform = {
 	"Windows": "Windows",
 	"macOS": "macOS",
