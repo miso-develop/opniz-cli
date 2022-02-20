@@ -1,7 +1,7 @@
 import inquirer from "inquirer"
 import "zx/globals"
 import wifi from "node-wifi"
-import { spinnerWrap, retryCommand } from "./util"
+import { spinnerWrap } from "./util"
 import { arduinoCliPath } from "../config"
 import { Device } from "../type"
 
@@ -29,7 +29,7 @@ export const monitorPrompt = async (options) => {
 
 
 const getPortList = async (): Promise<string[]> => {
-	const result = (await retryCommand(`${arduinoCliPath} board list`, 10)).replace(/(\n\n)+/, "")
+	const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
 	const portList = result
 		.split("\n")
 		.map(line => line.split(" ")[0])

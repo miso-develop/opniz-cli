@@ -21,7 +21,7 @@ $.verbose = false;
 process.chdir(__dirname + "/../../");
 const list = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, util_1.spinnerWrap)("Loading board list", () => __awaiter(void 0, void 0, void 0, function* () {
-        return (yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} board list`, 10)).replace(/(\n\n)+/, "");
+        return (yield $ `${config_1.arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "");
     }));
 });
 exports.list = list;
