@@ -23,9 +23,14 @@ const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, functio
         if (count > 0)
             console.log("retry:", count, command); // debug:
         count++;
-        const result = yield $(pieces);
-        if (result.exitCode === 0)
-            return result.stdout;
+        try {
+            const result = yield $(pieces);
+            if (result.exitCode === 0)
+                return result.stdout;
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
     throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`);
 });

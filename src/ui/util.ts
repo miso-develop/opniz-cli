@@ -8,8 +8,12 @@ export const retryCommand = async (command: string, max: number): Promise<string
 	while (count < max) {
 		if (count > 0) console.log("retry:", count, command) // debug:
 		count++
-		const result = await $(pieces)
-		if (result.exitCode === 0) return result.stdout
+		try {
+			const result = await $(pieces)
+			if (result.exitCode === 0) return result.stdout
+		} catch (e) {
+			console.error(e)
+		}
 	}
 	throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`)
 }
