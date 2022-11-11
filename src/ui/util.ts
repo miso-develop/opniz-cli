@@ -1,4 +1,8 @@
 import ora from "ora"
+import util from "util"
+import { exec } from "child_process"
+
+export const promiseExec = (command) => (util.promisify(exec))(path.normalize(command))
 
 export const zxFormat = (templateStrings: string) => [templateStrings] as any as TemplateStringsArray
 
@@ -18,13 +22,13 @@ export const retryCommand = async (command: string, max: number): Promise<string
 	throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`)
 }
 
-export const spinnerWrap = async (text, func, stopType = "stop") => {
+export const spinnerWrap = async (text, func, stopType = "stop"): Promise<any> => {
 	const spinner = ora(text).start()
 	
 	try {
 		const result = await func()
-		if (result) console.log(result.replace(/(\n\n)+/, ""))
 		spinner[stopType]()
+		return result
 		
 	} catch (e) {
 		spinner.fail()

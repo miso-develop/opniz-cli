@@ -12,8 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.spinnerWrap = exports.retryCommand = exports.zxFormat = void 0;
+exports.spinnerWrap = exports.retryCommand = exports.zxFormat = exports.promiseExec = void 0;
 const ora_1 = __importDefault(require("ora"));
+const util_1 = __importDefault(require("util"));
+const child_process_1 = require("child_process");
+const promiseExec = (command) => (util_1.default.promisify(child_process_1.exec))(path.normalize(command));
+exports.promiseExec = promiseExec;
 const zxFormat = (templateStrings) => [templateStrings];
 exports.zxFormat = zxFormat;
 const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,9 +43,8 @@ const spinnerWrap = (text, func, stopType = "stop") => __awaiter(void 0, void 0,
     const spinner = (0, ora_1.default)(text).start();
     try {
         const result = yield func();
-        if (result)
-            console.log(result.replace(/(\n\n)+/, ""));
         spinner[stopType]();
+        return result;
     }
     catch (e) {
         spinner.fail();
