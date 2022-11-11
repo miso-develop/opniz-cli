@@ -39,11 +39,13 @@ const monitorPrompt = (options) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.monitorPrompt = monitorPrompt;
 const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = (yield $ `${config_1.arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "");
+    // MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
+    // const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
+    const result = (yield (0, util_1.promiseExec)(`${config_1.arduinoCliPath} board list`)).stdout.replace(/(\n\n)+/, "");
     const portList = result
         .split("\n")
         .map(line => line.split(" ")[0])
-        .filter(port => port !== "Port");
+        .filter((element, index) => index > 0);
     return portList;
 });
 const getSsidList = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -83,73 +85,85 @@ const validPromptPortNumber = (value) => {
 };
 const validDeviceName = (deviceName) => deviceList.includes(deviceName.toLowerCase());
 const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, function* () {
-    const questions = [];
-    yield (0, util_1.spinnerWrap)("Loading serial port", () => __awaiter(void 0, void 0, void 0, function* () {
-        if (!options.devicePort)
-            questions.push({
-                name: "devicePort",
-                type: "list",
-                choices: yield getPortList(),
-                message: "デバイスのシリアルポートを選択してください:",
-            });
-        if (!options.ssid)
-            questions.push({
-                name: "ssid",
-                type: "list",
-                choices: yield getSsidList(),
-                message: "デバイスを接続するWi-FiのSSIDを選択してください:",
-            }, {
-                name: "ssidInput",
-                type: "input",
-                message: "デバイスを接続するWi-FiのSSIDを入力してください:",
-                validate: input => input !== "" || "値を入力してください！",
-                when: (answers) => answers.ssid === "Other",
-            });
-        if (!options.password)
-            questions.push({
-                name: "password",
-                type: "password",
-                mask: "*",
-                message: "デバイスを接続するWi-Fiのパスワードを入力してください:",
-                validate: input => input !== "" || "値を入力してください！",
-            });
-        if (!options.address)
-            questions.push({
-                name: "address",
-                type: "list",
-                choices: yield getAddressList(),
-                message: "opnizプログラム実行マシンのIPアドレスを選択してください:",
-            }, {
-                name: "addressInput",
-                type: "input",
-                message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください:",
-                validate: input => input !== "" || "値を入力してください！",
-                when: (answers) => answers.address === "Other",
-            });
-        if (!options.device || !validDeviceName(options.device))
-            questions.push({
-                name: "device",
-                type: "list",
-                choices: deviceList,
-                default: "m5atom",
-                message: "デバイスを選択してください:",
-            });
-        if (!options.port || !validPortNumber(options.port))
-            questions.push({
-                name: "port",
-                type: "input",
-                default: 3000,
-                message: "opnizプログラムの通信ポート番号を入力してください:",
-                validate: validPromptPortNumber,
-            });
-        // MEMO: ユースケースが限られるので対話モードからは除外
-        // if (!options.id) questions.push({
-        // 	name: "id",
-        // 	type: "input",
-        // 	default: "\"\"",
-        // 	message: "opniz IDを入力してください:",
-        // })
+    const [portList, ssidList, addressList] = yield (0, util_1.spinnerWrap)("Loading serial port", () => __awaiter(void 0, void 0, void 0, function* () {
+        return Promise.all([
+            getPortList(),
+            getSsidList(),
+            getAddressList(),
+        ]);
     }));
+    const questions = [];
+    if (!options.devicePort)
+        questions.push({
+            name: "devicePort",
+            type: "list",
+            choices: portList,
+            message: "デバイスのシリアルポートを選択してください:",
+        });
+    if (!options.ssid && ssidList.length > 1)
+        questions.push({
+            name: "ssid",
+            type: "list",
+            choices: ssidList,
+            message: "デバイスを接続するWi-FiのSSIDを選択してください:",
+        }, {
+            name: "ssidInput",
+            type: "input",
+            message: "デバイスを接続するWi-FiのSSIDを入力してください:",
+            validate: input => input !== "" || "値を入力してください！",
+            when: (answers) => answers.ssid === "Other",
+        });
+    if (!options.ssid && ssidList.length === 1)
+        questions.push({
+            name: "ssidInput",
+            type: "input",
+            message: "デバイスを接続するWi-FiのSSIDを入力してください:",
+            validate: input => input !== "" || "値を入力してください！",
+        });
+    if (!options.password)
+        questions.push({
+            name: "password",
+            type: "password",
+            mask: "*",
+            message: "デバイスを接続するWi-Fiのパスワードを入力してください:",
+            validate: input => input !== "" || "値を入力してください！",
+        });
+    if (!options.address)
+        questions.push({
+            name: "address",
+            type: "list",
+            choices: addressList,
+            message: "opnizプログラム実行マシンのIPアドレスを選択してください:",
+        }, {
+            name: "addressInput",
+            type: "input",
+            message: "opnizプログラム実行マシンのIPアドレスまたはホスト名、ドメイン名を入力してください:",
+            validate: input => input !== "" || "値を入力してください！",
+            when: (answers) => answers.address === "Other",
+        });
+    if (!options.device || !validDeviceName(options.device))
+        questions.push({
+            name: "device",
+            type: "list",
+            choices: deviceList,
+            default: "m5atom",
+            message: "デバイスを選択してください:",
+        });
+    if (!options.port || !validPortNumber(options.port))
+        questions.push({
+            name: "port",
+            type: "input",
+            default: 3000,
+            message: "opnizプログラムの通信ポート番号を入力してください:",
+            validate: validPromptPortNumber,
+        });
+    // MEMO: ユースケースが限られるので対話モードからは除外
+    // if (!options.id) questions.push({
+    // 	name: "id",
+    // 	type: "input",
+    // 	default: "\"\"",
+    // 	message: "opniz IDを入力してください:",
+    // })
     return questions;
 });
 const setMonitorQuestions = (options) => __awaiter(void 0, void 0, void 0, function* () {
