@@ -20,9 +20,10 @@ const config_1 = require("../../config");
 $.verbose = false;
 process.chdir(__dirname + "/../../");
 const list = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, util_1.spinnerWrap)("Loading board list", () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, util_1.spinnerWrap)("Loading board list", () => __awaiter(void 0, void 0, void 0, function* () {
         return (yield $ `${config_1.arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "");
     }));
+    console.log(result);
 });
 exports.list = list;
 const monitor = (devicePort) => __awaiter(void 0, void 0, void 0, function* () {

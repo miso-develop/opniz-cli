@@ -8,9 +8,10 @@ $.verbose = false
 process.chdir(__dirname + "/../../")
 
 const list = async (): Promise<void> => {
-	await spinnerWrap("Loading board list", async () => {
+	const result = await spinnerWrap("Loading board list", async () => {
 		return (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
 	})
+	console.log(result)
 }
 
 const monitor = async (devicePort: string): Promise<void> => {

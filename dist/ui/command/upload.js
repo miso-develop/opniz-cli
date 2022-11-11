@@ -35,12 +35,14 @@ const upload = (devicePort, ssid, password, address, port, id, device) => __awai
 });
 exports.upload = upload;
 const uploadSketch = (devicePort, fqbn) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, util_1.spinnerWrap)(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
+    const compileResult = yield (0, util_1.spinnerWrap)(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
         return (yield $ `${config_1.arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout;
     }), "succeed");
-    yield (0, util_1.spinnerWrap)(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(compileResult.replace(/(\n\n)+/, ""));
+    const uploadResult = yield (0, util_1.spinnerWrap)(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
         return (yield $ `${config_1.arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout;
     }), "succeed");
+    console.log(uploadResult.replace(/(\n\n)+/, ""));
 });
 const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => __awaiter(void 0, void 0, void 0, function* () {
     const templateSketch = sketch;

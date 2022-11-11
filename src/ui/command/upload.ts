@@ -38,13 +38,15 @@ export const upload = async (
 }
 
 const uploadSketch = async (devicePort: string, fqbn: string) => {
-	await spinnerWrap(`Compile sketch`, async () => {
+	const compileResult = await spinnerWrap(`Compile sketch`, async () => {
 		return (await $`${arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout
 	}, "succeed")
+	console.log(compileResult.replace(/(\n\n)+/, ""))
 	
-	await spinnerWrap(`Upload opniz to port: ${devicePort}`, async () => {
+	const uploadResult = await spinnerWrap(`Upload opniz to port: ${devicePort}`, async () => {
 		return (await $`${arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout
 	}, "succeed")
+	console.log(uploadResult.replace(/(\n\n)+/, ""))
 }
 
 const createSketch = async (
