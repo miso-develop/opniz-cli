@@ -71,7 +71,8 @@ const getUrl = ({platform, arch, extension}: OSInfo): string => {
 	
 	// return `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${extension}` // MEMO: latest
 	// return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${extension}` // MEMO: 0.20.2
-	return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
+	// return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
+	return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.21.1_${platform}_${arch}${extension}` // MEMO: 0.21.1
 }
 
 
