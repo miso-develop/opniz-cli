@@ -1,5 +1,5 @@
 import "zx/globals"
-import { zxFormat, spinnerWrap } from "../util"
+import { promiseExec, spinnerWrap } from "../util"
 import { arduinoCliPath, deviceInfoList } from "../../config"
 import { Device, DeviceInfo } from "../../type"
 
@@ -73,9 +73,9 @@ const createSketch = async (
 
 const installDeviceLibrary = async (library: string): Promise<string | void> => {
 	if (library === "") return
-	return (await $(zxFormat(`${arduinoCliPath} lib install ${library}`))).stdout
+	return (await promiseExec(`${path.normalize(arduinoCliPath)} lib install ${library}`)).stdout
 }
 
 const installOpniz = async (repo: string): Promise<string | void> => {
-	return (await $(zxFormat(`${arduinoCliPath} lib install --git-url ${repo}`))).stdout
+	return (await promiseExec(`${path.normalize(arduinoCliPath)} lib install --git-url ${repo}`)).stdout
 }

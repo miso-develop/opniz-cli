@@ -60,8 +60,8 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
 const installDeviceLibrary = (library) => __awaiter(void 0, void 0, void 0, function* () {
     if (library === "")
         return;
-    return (yield $((0, util_1.zxFormat)(`${config_1.arduinoCliPath} lib install ${library}`))).stdout;
+    return (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} lib install ${library}`)).stdout;
 });
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
-    return (yield $((0, util_1.zxFormat)(`${config_1.arduinoCliPath} lib install --git-url ${repo}`))).stdout;
+    return (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} lib install --git-url ${repo}`)).stdout;
 });
