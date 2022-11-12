@@ -28,15 +28,11 @@ const initConfig = async (): Promise<void> => {
 }
 
 const installCore = async (): Promise<void> => {
-	// MEMO: なくても良さげかつ`lib update-index`がM1 macでエラーで止まったので同様にコメントアウト
-	// await $`${arduinoCliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
-	
+	await $`${arduinoCliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
 	await retryCommand(`${arduinoCliPath} core install esp32:esp32@1.0.6`, 50) // ESP32ボードパッケージインストール
 }
 
 const installLibrary = async (): Promise<void> => {
-	// MEMO: なくても良さげかつM1 macでエラーで止まったのでコメントアウト
-	// await $`${arduinoCliPath} lib update-index` // ライブラリのローカルキャッシュ更新
-	
-	await retryCommand(`${arduinoCliPath} lib install ArduinoJson WebSockets`, 10) // 依存ライブラリインストール
+	await $`${arduinoCliPath} lib update-index` // ライブラリのローカルキャッシュ更新
+	await retryCommand(`${arduinoCliPath} lib install ArduinoJson@6.17.3 WebSockets@2.3.6`, 10) // opniz依存ライブラリインストール
 }
