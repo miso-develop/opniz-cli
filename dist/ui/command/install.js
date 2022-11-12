@@ -75,9 +75,8 @@ const getUrl = ({ platform, arch, extension }) => {
     // Windows,	64bit,	zip
     // macOS,	64bit,	tar.gz
     // return `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${extension}` // MEMO: latest
-    // return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.20.2_${platform}_${arch}${extension}` // MEMO: 0.20.2
     // return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
-    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.21.1_${platform}_${arch}${extension}`; // MEMO: 0.21.1
+    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.28.0_${platform}_${arch}${extension}`; // MEMO: 0.28.0
 };
 const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(url);
