@@ -41,7 +41,7 @@ exports.monitorPrompt = monitorPrompt;
 const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
     // MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
     // const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
-    const result = (yield (0, util_1.promiseExec)(`${config_1.arduinoCliPath} board list`)).stdout.replace(/(\n\n)+/, "");
+    const result = (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} board list`)).stdout.replace(/(\n\n)+/, "");
     const portList = result
         .split("\n")
         .map(line => line.split(" ")[0])

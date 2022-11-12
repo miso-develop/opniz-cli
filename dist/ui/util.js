@@ -16,8 +16,7 @@ exports.spinnerWrap = exports.retryCommand = exports.zxFormat = exports.promiseE
 const ora_1 = __importDefault(require("ora"));
 const util_1 = __importDefault(require("util"));
 const child_process_1 = require("child_process");
-const promiseExec = (command) => (util_1.default.promisify(child_process_1.exec))(path.normalize(command));
-exports.promiseExec = promiseExec;
+exports.promiseExec = util_1.default.promisify(child_process_1.exec);
 const zxFormat = (templateStrings) => [templateStrings];
 exports.zxFormat = zxFormat;
 const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,6 +33,7 @@ const retryCommand = (command, max) => __awaiter(void 0, void 0, void 0, functio
         }
         catch (e) {
             console.error(e);
+            yield sleep(100);
         }
     }
     throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`);

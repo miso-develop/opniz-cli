@@ -2,7 +2,7 @@ import ora from "ora"
 import util from "util"
 import { exec } from "child_process"
 
-export const promiseExec = (command) => (util.promisify(exec))(path.normalize(command))
+export const promiseExec = util.promisify(exec)
 
 export const zxFormat = (templateStrings: string) => [templateStrings] as any as TemplateStringsArray
 
@@ -17,6 +17,7 @@ export const retryCommand = async (command: string, max: number): Promise<string
 			if (result.exitCode === 0) return result.stdout
 		} catch (e) {
 			console.error(e)
+			await sleep(100)
 		}
 	}
 	throw new Error(`retryCommand: \`${command}\` failed after ${max} retries`)
