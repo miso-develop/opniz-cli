@@ -22,7 +22,7 @@ export const deviceInfoList: DeviceInfoList = {
 	},
 	[Device.m5atom]: {
 		fqbn: "esp32:esp32:m5stack-atom",
-		library: "M5Atom@0.0.3 FastLED",
+		library: "M5Atom@0.1.0 FastLED",
 		repo: "https://github.com/miso-develop/opniz-arduino-m5atom",
 		sketch: "m5atom.ino",
 	},
