@@ -1,12 +1,12 @@
 import "zx/globals"
 import AdmZip from "adm-zip"
 import tar from "tar"
-import { downloadPath, installPath } from "../../config"
+import { downloadPath, installPath, arduinoCliVersion } from "../../config"
 import { OSInfo, Platform, Architecture, Extension } from "../../type"
 
 export const install = async (): Promise<void> => {
 	const osInfo = getOSInfo()
-	const url = getUrl(osInfo)
+	const url = getDownloadUrl(osInfo)
 	await download(url)
 	await extract(osInfo.extension)
 }
@@ -59,7 +59,7 @@ const getExtension = (platform: Platform): Extension => {
 
 
 
-const getUrl = ({platform, arch, extension}: OSInfo): string => {
+const getDownloadUrl = ({platform, arch, extension}: OSInfo): string => {
 	// https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
 	// Linux,	32bit,	tar.gz
 	// Linux,	64bit,	tar.gz
@@ -69,9 +69,7 @@ const getUrl = ({platform, arch, extension}: OSInfo): string => {
 	// Windows,	64bit,	zip
 	// macOS,	64bit,	tar.gz
 	
-	// return `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${extension}` // MEMO: latest
-	// return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
-	return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.28.0_${platform}_${arch}${extension}` // MEMO: 0.28.0
+	return `https://downloads.arduino.cc/arduino-cli/arduino-cli_${arduinoCliVersion}_${platform}_${arch}${extension}`
 }
 
 

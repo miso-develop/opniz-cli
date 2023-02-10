@@ -20,7 +20,7 @@ const config_1 = require("../../config");
 const type_1 = require("../../type");
 const install = () => __awaiter(void 0, void 0, void 0, function* () {
     const osInfo = getOSInfo();
-    const url = getUrl(osInfo);
+    const url = getDownloadUrl(osInfo);
     yield download(url);
     yield extract(osInfo.extension);
 });
@@ -65,7 +65,7 @@ const getExtension = (platform) => {
         default: return type_1.Extension[".tar.gz"];
     }
 };
-const getUrl = ({ platform, arch, extension }) => {
+const getDownloadUrl = ({ platform, arch, extension }) => {
     // https://arduino.github.io/arduino-cli/0.20/installation/#latest-release
     // Linux,	32bit,	tar.gz
     // Linux,	64bit,	tar.gz
@@ -74,9 +74,7 @@ const getUrl = ({ platform, arch, extension }) => {
     // Windows,	32bit,	zip
     // Windows,	64bit,	zip
     // macOS,	64bit,	tar.gz
-    // return `https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_${platform}_${arch}${extension}` // MEMO: latest
-    // return `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-20220219_${platform}_${arch}${extension}` // MEMO: nightly-20220219
-    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_0.28.0_${platform}_${arch}${extension}`; // MEMO: 0.28.0
+    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_${config_1.arduinoCliVersion}_${platform}_${arch}${extension}`;
 };
 const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(url);
