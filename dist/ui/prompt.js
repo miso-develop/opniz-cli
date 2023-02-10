@@ -17,7 +17,6 @@ const inquirer_1 = __importDefault(require("inquirer"));
 require("zx/globals");
 const node_wifi_1 = __importDefault(require("node-wifi"));
 const util_1 = require("./util");
-const config_1 = require("../config");
 const type_1 = require("../type");
 $.verbose = false;
 process.chdir(__dirname + "/../../");
@@ -41,7 +40,7 @@ exports.monitorPrompt = monitorPrompt;
 const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
     // MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
     // const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
-    const result = (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} board list`)).stdout.replace(/(\n\n)+/, "");
+    const result = (yield (0, util_1.arduinoCliExec)(`board list`)).stdout.replace(/(\n\n)+/, "");
     const portList = result
         .split("\n")
         .map(line => line.split(" ")[0])
@@ -85,19 +84,16 @@ const validPromptPortNumber = (value) => {
 };
 const validDeviceName = (deviceName) => deviceList.includes(deviceName.toLowerCase());
 const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, function* () {
-    const [portList, ssidList, addressList] = yield (0, util_1.spinnerWrap)("Loading serial port", () => __awaiter(void 0, void 0, void 0, function* () {
-        return Promise.all([
-            getPortList(),
-            getSsidList(),
-            getAddressList(),
-        ]);
-    }));
+    const [ssidList, addressList] = yield Promise.all([
+        getSsidList(),
+        getAddressList(),
+    ]);
     const questions = [];
     if (!options.devicePort)
         questions.push({
             name: "devicePort",
             type: "list",
-            choices: portList,
+            choices: yield (0, util_1.spinnerWrap)("Loading serial port", getPortList),
             message: "デバイスのシリアルポートを選択してください:",
         });
     if (!options.ssid && ssidList.length > 1)

@@ -1,7 +1,7 @@
 import inquirer from "inquirer"
 import "zx/globals"
 import wifi from "node-wifi"
-import { promiseExec, spinnerWrap } from "./util"
+import { arduinoCliExec, spinnerWrap } from "./util"
 import { arduinoCliPath } from "../config"
 import { Device } from "../type"
 
@@ -31,7 +31,7 @@ export const monitorPrompt = async (options) => {
 const getPortList = async (): Promise<string[]> => {
 	// MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
 	// const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
-	const result = (await promiseExec(`${path.normalize(arduinoCliPath)} board list`)).stdout.replace(/(\n\n)+/, "")
+	const result = (await arduinoCliExec(`board list`)).stdout.replace(/(\n\n)+/, "")
 	
 	const portList = result
 		.split("\n")
@@ -83,20 +83,17 @@ const validDeviceName = (deviceName: string): boolean => deviceList.includes(dev
 
 
 const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[]> => {
-	const [portList, ssidList, addressList] = await spinnerWrap("Loading serial port", async (): Promise<string[][]> => {
-		return Promise.all([
-			getPortList(),
-			getSsidList(),
-			getAddressList(),
-		])
-	})
+	const [ssidList, addressList] = await Promise.all([
+		getSsidList(),
+		getAddressList(),
+	])
 	
 	const questions: inquirer.QuestionCollection[] = []
 	
 	if (!options.devicePort) questions.push({
 		name: "devicePort",
 		type: "list",
-		choices: portList,
+		choices: await spinnerWrap("Loading serial port", getPortList),
 		message: "デバイスのシリアルポートを選択してください:",
 	})
 	
