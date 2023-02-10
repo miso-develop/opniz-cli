@@ -1,5 +1,6 @@
 import "zx/globals"
-import { promiseExec, spinnerWrap } from "../util"
+import { init } from "./init"
+import { arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util"
 import { arduinoCliPath, deviceInfoList } from "../../config"
 import { Device, DeviceInfo } from "../../type"
 
@@ -24,8 +25,10 @@ export const upload = async (
 		await createSketch(ssid, password, address, port, id, deviceInfo.sketch)
 		
 		await spinnerWrap(`Install library`, async () => {
+			await init()
+			
 			await Promise.all([
-				installDeviceLibrary(deviceInfo.library),
+				installDeviceLibraries(deviceInfo.library),
 				installOpniz(deviceInfo.repo),
 			])
 		}, "succeed")
@@ -71,11 +74,13 @@ const createSketch = async (
 	fs.writeFileSync(sketchPath, sketchSource)
 }
 
-const installDeviceLibrary = async (library: string): Promise<string | void> => {
-	if (library === "") return
-	return (await promiseExec(`${path.normalize(arduinoCliPath)} lib install ${library}`)).stdout
+const installDeviceLibraries = async (libraries: string): Promise<string | void> => {
+	if (libraries === "") return
+	if (await isLatestLibraries(libraries)) return
+	return (await arduinoCliExec(`lib install ${libraries}`)).stdout
 }
 
 const installOpniz = async (repo: string): Promise<string | void> => {
-	return (await promiseExec(`${path.normalize(arduinoCliPath)} lib install --git-url ${repo}`)).stdout
+	if (await isLatestOpniz(repo)) return
+	return (await arduinoCliExec(`lib install --git-url ${repo}`)).stdout
 }

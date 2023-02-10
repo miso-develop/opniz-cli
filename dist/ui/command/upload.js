@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upload = void 0;
 require("zx/globals");
+const init_1 = require("./init");
 const util_1 = require("../util");
 const config_1 = require("../../config");
 $.verbose = false;
@@ -22,8 +23,9 @@ const upload = (devicePort, ssid, password, address, port, id, device) => __awai
     try {
         yield createSketch(ssid, password, address, port, id, deviceInfo.sketch);
         yield (0, util_1.spinnerWrap)(`Install library`, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield (0, init_1.init)();
             yield Promise.all([
-                installDeviceLibrary(deviceInfo.library),
+                installDeviceLibraries(deviceInfo.library),
                 installOpniz(deviceInfo.repo),
             ]);
         }), "succeed");
@@ -57,11 +59,15 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
         fs.mkdirSync(sketchDir);
     fs.writeFileSync(sketchPath, sketchSource);
 });
-const installDeviceLibrary = (library) => __awaiter(void 0, void 0, void 0, function* () {
-    if (library === "")
+const installDeviceLibraries = (libraries) => __awaiter(void 0, void 0, void 0, function* () {
+    if (libraries === "")
         return;
-    return (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} lib install ${library}`)).stdout;
+    if (yield (0, util_1.isLatestLibraries)(libraries))
+        return;
+    return (yield (0, util_1.arduinoCliExec)(`lib install ${libraries}`)).stdout;
 });
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
-    return (yield (0, util_1.promiseExec)(`${path.normalize(config_1.arduinoCliPath)} lib install --git-url ${repo}`)).stdout;
+    if (yield (0, util_1.isLatestOpniz)(repo))
+        return;
+    return (yield (0, util_1.arduinoCliExec)(`lib install --git-url ${repo}`)).stdout;
 });
