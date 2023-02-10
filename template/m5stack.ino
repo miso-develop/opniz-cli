@@ -18,6 +18,7 @@ auto blink = [](boolean state) {
 
 void setup() {
     M5.begin(true, false, true, true);
+    Serial.begin(9600);
     wifiConnector.setTimeoutCallback([]() { esp_restart(); });
     wifiConnector.setConnectingSignal(blink);
     wifiConnector.connect();
