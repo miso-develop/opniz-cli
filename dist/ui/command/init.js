@@ -20,26 +20,30 @@ const init = () => __awaiter(void 0, void 0, void 0, function* () {
     yield initConfig();
     yield Promise.all([
         installCore(),
-        installLibrary(),
+        installLibraries(),
     ]);
 });
 exports.init = init;
 const initConfig = () => __awaiter(void 0, void 0, void 0, function* () {
-    if ((yield $ `[[ ! -f ${config_1.arduinoConfigPath} ]]`.exitCode) === 0)
-        yield $ `${config_1.arduinoCliPath} config init --dest-dir ${config_1.opnizRoot}`;
-    yield $ `${config_1.arduinoCliPath} config set board_manager.additional_urls https://dl.espressif.com/dl/package_esp32_index.json`; // ESP32用ボードマネージャ追加
-    yield $ `${config_1.arduinoCliPath} config set library.enable_unsafe_install true`;
-    yield $ `${config_1.arduinoCliPath} config set metrics.enabled false`;
-    // await $`${arduinoCliPath} config set sketch.always_export_binaries true` // MEMO: なくても良さげ
-    yield $ `${config_1.arduinoCliPath} config set updater.enable_notification false`;
+    if (!fs.existsSync(`${config_1.arduinoConfigPath}`))
+        yield (0, util_1.arduinoCliExec)(`config init --dest-dir ${config_1.opnizRoot}`);
+    yield (0, util_1.arduinoCliExec)(`config set board_manager.additional_urls ${config_1.boardManager}`); // ESP32用ボードマネージャ追加
+    yield (0, util_1.arduinoCliExec)(`config set library.enable_unsafe_install true`);
+    yield (0, util_1.arduinoCliExec)(`config set metrics.enabled false`);
+    // await arduinoCliExec(`config set sketch.always_export_binaries true`) // MEMO: なくても良さげ
+    yield (0, util_1.arduinoCliExec)(`config set updater.enable_notification false`);
     for (const dir of ["data", "downloads", "user"])
-        yield $ `${config_1.arduinoCliPath} config set directories.${dir} ${config_1.arduinoDirsPath}/${dir}`;
+        yield (0, util_1.arduinoCliExec)(`config set directories.${dir} ${config_1.arduinoDirsPath}/${dir}`);
 });
 const installCore = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield $ `${config_1.arduinoCliPath} core update-index`; // ボードパッケージのローカルキャッシュ更新
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} core install esp32:esp32@1.0.6`, 50); // ESP32ボードパッケージインストール
+    if (yield (0, util_1.isLatestCore)())
+        return;
+    yield (0, util_1.arduinoCliExec)(`core update-index`); // ボードパッケージのローカルキャッシュ更新
+    yield (0, util_1.retryArduinoCli)(`core install ${config_1.core}`, 50); // ESP32ボードパッケージインストール
 });
-const installLibrary = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield $ `${config_1.arduinoCliPath} lib update-index`; // ライブラリのローカルキャッシュ更新
-    yield (0, util_1.retryCommand)(`${config_1.arduinoCliPath} lib install ArduinoJson@6.17.3 WebSockets@2.3.6`, 10); // opniz依存ライブラリインストール
+const installLibraries = () => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield (0, util_1.isLatestLibraries)(config_1.dependenceLibraries))
+        return;
+    yield (0, util_1.arduinoCliExec)(`lib update-index`); // ライブラリのローカルキャッシュ更新
+    yield (0, util_1.retryArduinoCli)(`lib install ${config_1.dependenceLibraries}`, 10); // opniz依存ライブラリインストール
 });

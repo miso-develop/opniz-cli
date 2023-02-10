@@ -1,6 +1,6 @@
 import "zx/globals"
-import { retryCommand } from "../util"
-import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath } from "../../config"
+import { arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util"
+import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config"
 
 $.verbose = false
 process.chdir(__dirname + "/../../../")
@@ -11,28 +11,30 @@ export const init = async () => {
 	
 	await Promise.all([
 		installCore(),
-		installLibrary(),
+		installLibraries(),
 	])
 }
 
 const initConfig = async (): Promise<void> => {
-	if (await $`[[ ! -f ${arduinoConfigPath} ]]`.exitCode === 0) await $`${arduinoCliPath} config init --dest-dir ${opnizRoot}`
+	if (!fs.existsSync(`${arduinoConfigPath}`)) await arduinoCliExec(`config init --dest-dir ${opnizRoot}`)
 	
-	await $`${arduinoCliPath} config set board_manager.additional_urls https://dl.espressif.com/dl/package_esp32_index.json` // ESP32用ボードマネージャ追加
-	await $`${arduinoCliPath} config set library.enable_unsafe_install true`
-	await $`${arduinoCliPath} config set metrics.enabled false`
-	// await $`${arduinoCliPath} config set sketch.always_export_binaries true` // MEMO: なくても良さげ
-	await $`${arduinoCliPath} config set updater.enable_notification false`
+	await arduinoCliExec(`config set board_manager.additional_urls ${boardManager}`) // ESP32用ボードマネージャ追加
+	await arduinoCliExec(`config set library.enable_unsafe_install true`)
+	await arduinoCliExec(`config set metrics.enabled false`)
+	// await arduinoCliExec(`config set sketch.always_export_binaries true`) // MEMO: なくても良さげ
+	await arduinoCliExec(`config set updater.enable_notification false`)
 	
-	for (const dir of ["data", "downloads", "user"]) await $`${arduinoCliPath} config set directories.${dir} ${arduinoDirsPath}/${dir}`
+	for (const dir of ["data", "downloads", "user"]) await arduinoCliExec(`config set directories.${dir} ${arduinoDirsPath}/${dir}`)
 }
 
 const installCore = async (): Promise<void> => {
-	await $`${arduinoCliPath} core update-index` // ボードパッケージのローカルキャッシュ更新
-	await retryCommand(`${arduinoCliPath} core install esp32:esp32@1.0.6`, 50) // ESP32ボードパッケージインストール
+	if (await isLatestCore()) return
+	await arduinoCliExec(`core update-index`) // ボードパッケージのローカルキャッシュ更新
+	await retryArduinoCli(`core install ${core}`, 50) // ESP32ボードパッケージインストール
 }
 
-const installLibrary = async (): Promise<void> => {
-	await $`${arduinoCliPath} lib update-index` // ライブラリのローカルキャッシュ更新
-	await retryCommand(`${arduinoCliPath} lib install ArduinoJson@6.17.3 WebSockets@2.3.6`, 10) // opniz依存ライブラリインストール
+const installLibraries = async (): Promise<void> => {
+	if (await isLatestLibraries(dependenceLibraries)) return
+	await arduinoCliExec(`lib update-index`) // ライブラリのローカルキャッシュ更新
+	await retryArduinoCli(`lib install ${dependenceLibraries}`, 10) // opniz依存ライブラリインストール
 }
