@@ -1,2 +1,4 @@
 #!/usr/bin/env node
-import "./ui/argParser.js";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./ui/argParser.js");

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,9 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { install } from "./ui/command/install.js";
-import { init } from "./ui/command/command.js";
+Object.defineProperty(exports, "__esModule", { value: true });
+const install_js_1 = require("./ui/command/install.js");
+const command_js_1 = require("./ui/command/command.js");
 ~(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield install();
-    yield init();
+    yield (0, install_js_1.install)();
+    yield (0, command_js_1.init)();
 }))();

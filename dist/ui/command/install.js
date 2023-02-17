@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,17 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import "zx/globals";
-import AdmZip from "adm-zip";
-import tar from "tar";
-import { downloadPath, installPath, arduinoCliVersion } from "../../config.js";
-import { Platform, Architecture, Extension } from "../../type.js";
-export const install = () => __awaiter(void 0, void 0, void 0, function* () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.install = void 0;
+require("zx/globals");
+const adm_zip_1 = __importDefault(require("adm-zip"));
+const tar_1 = __importDefault(require("tar"));
+const config_js_1 = require("../../config.js");
+const type_js_1 = require("../../type.js");
+$.verbose = false;
+process.chdir(__dirname + "/../../../");
+const install = () => __awaiter(void 0, void 0, void 0, function* () {
     const osInfo = getOSInfo();
     const url = getDownloadUrl(osInfo);
     yield download(url);
     yield extract(osInfo.extension);
 });
+exports.install = install;
 const getOSInfo = () => {
     const platform = getPlatform();
     return {
@@ -30,32 +39,32 @@ const getPlatform = () => {
     // https://nodejs.org/api/process.html#processplatform
     // "aix", "darwin", "freebsd", "linux", "openbsd", "sunos", "win32"
     switch (os.platform()) {
-        case "win32": return Platform["Windows"];
-        case "darwin": return Platform["macOS"];
-        case "linux": return Platform["Linux"];
-        default: return Platform["Linux"];
+        case "win32": return type_js_1.Platform["Windows"];
+        case "darwin": return type_js_1.Platform["macOS"];
+        case "linux": return type_js_1.Platform["Linux"];
+        default: return type_js_1.Platform["Linux"];
     }
 };
 const getArch = (platform) => {
     // MEMO: M1 macの場合だとarchでARM64が返ってくるが2022/1/1現在非対応のため、macOSならarchは64bit固定で返す
-    if (platform === Platform["macOS"])
-        return Architecture["64bit"];
+    if (platform === type_js_1.Platform["macOS"])
+        return type_js_1.Architecture["64bit"];
     // https://nodejs.org/api/process.html#processarch
     // "arm", "arm64", "ia32", "mips", "mipsel", "ppc", "ppc64", "s390", "s390x", "x32", "x64"
     switch (os.arch()) {
-        case "arm": return Architecture["ARMv7"];
-        case "arm64": return Architecture["ARM64"];
-        case "x32": return Architecture["32bit"];
-        case "x64": return Architecture["64bit"];
-        default: return Architecture["64bit"];
+        case "arm": return type_js_1.Architecture["ARMv7"];
+        case "arm64": return type_js_1.Architecture["ARM64"];
+        case "x32": return type_js_1.Architecture["32bit"];
+        case "x64": return type_js_1.Architecture["64bit"];
+        default: return type_js_1.Architecture["64bit"];
     }
 };
 const getExtension = (platform) => {
     switch (platform) {
-        case Platform["Windows"]: return Extension[".zip"];
-        case Platform["macOS"]: return Extension[".tar.gz"];
-        case Platform["Linux"]: return Extension[".tar.gz"];
-        default: return Extension[".tar.gz"];
+        case type_js_1.Platform["Windows"]: return type_js_1.Extension[".zip"];
+        case type_js_1.Platform["macOS"]: return type_js_1.Extension[".tar.gz"];
+        case type_js_1.Platform["Linux"]: return type_js_1.Extension[".tar.gz"];
+        default: return type_js_1.Extension[".tar.gz"];
     }
 };
 const getDownloadUrl = ({ platform, arch, extension }) => {
@@ -67,38 +76,38 @@ const getDownloadUrl = ({ platform, arch, extension }) => {
     // Windows,	32bit,	zip
     // Windows,	64bit,	zip
     // macOS,	64bit,	tar.gz
-    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_${arduinoCliVersion}_${platform}_${arch}${extension}`;
+    return `https://downloads.arduino.cc/arduino-cli/arduino-cli_${config_js_1.arduinoCliVersion}_${platform}_${arch}${extension}`;
 };
 const download = (url) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(url);
     const downloadStream = response.body;
-    const fileStream = fs.createWriteStream(downloadPath);
+    const fileStream = fs.createWriteStream(config_js_1.downloadPath);
     yield new Promise((resolve, reject) => {
         downloadStream.pipe(fileStream).on("finish", resolve);
         downloadStream.on("error", reject);
     });
 });
 const extract = (extension) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!fs.existsSync(installPath))
-        fs.mkdirSync(installPath);
+    if (!fs.existsSync(config_js_1.installPath))
+        fs.mkdirSync(config_js_1.installPath);
     switch (extension) {
-        case Extension[".zip"]:
+        case type_js_1.Extension[".zip"]:
             yield extractZip();
             break;
-        case Extension[".tar.gz"]:
+        case type_js_1.Extension[".tar.gz"]:
             yield extractTarGz();
             break;
     }
-    fs.unlinkSync(downloadPath);
+    fs.unlinkSync(config_js_1.downloadPath);
 });
 const extractZip = () => __awaiter(void 0, void 0, void 0, function* () {
-    const zip = new AdmZip(downloadPath);
-    zip.extractAllTo(installPath, true);
-    fs.copyFileSync(`${installPath}/arduino-cli.exe`, `${installPath}/arduino-cli`);
+    const zip = new adm_zip_1.default(config_js_1.downloadPath);
+    zip.extractAllTo(config_js_1.installPath, true);
+    fs.copyFileSync(`${config_js_1.installPath}/arduino-cli.exe`, `${config_js_1.installPath}/arduino-cli`);
 });
 const extractTarGz = () => __awaiter(void 0, void 0, void 0, function* () {
-    let extractor = tar.x({ cwd: installPath });
+    let extractor = tar_1.default.x({ cwd: config_js_1.installPath });
     yield new Promise((resolve, reject) => {
-        fs.createReadStream(downloadPath).pipe(extractor).on("finish", resolve);
+        fs.createReadStream(config_js_1.downloadPath).pipe(extractor).on("finish", resolve);
     });
 });

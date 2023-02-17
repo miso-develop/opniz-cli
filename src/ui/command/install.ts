@@ -4,6 +4,9 @@ import tar from "tar"
 import { downloadPath, installPath, arduinoCliVersion } from "../../config.js"
 import { OSInfo, Platform, Architecture, Extension } from "../../type.js"
 
+$.verbose = false
+process.chdir(__dirname + "/../../../")
+
 export const install = async (): Promise<void> => {
 	const osInfo = getOSInfo()
 	const url = getDownloadUrl(osInfo)

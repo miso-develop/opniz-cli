@@ -6,6 +6,7 @@ import { defaultDevice, defaultPort } from "../config.js"
 import { Device } from "../type.js"
 
 $.verbose = false
+process.chdir(__dirname + "/../../")
 
 const deviceList = Object.keys(Device)
 

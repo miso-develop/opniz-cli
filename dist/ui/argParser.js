@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Command } from "commander";
-import { require } from "./util.js";
-import { init, list, upload, monitor, arduino } from "./command/command.js";
-import { uploadPrompt, monitorPrompt } from "./prompt.js";
-const program = new Command();
+Object.defineProperty(exports, "__esModule", { value: true });
+const commander_1 = require("commander");
+const command_js_1 = require("./command/command.js");
+const prompt_js_1 = require("./prompt.js");
+const program = new commander_1.Command();
 program.helpOption("-h, --help", "コマンドのヘルプを表示します。");
 const version = "v" + require("../../package.json").version;
 program.version(version, "-v, --version", "バージョンを表示します。");
@@ -21,7 +22,7 @@ program.command("init", { hidden: true })
     .addHelpCommand(false)
     .action((options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(options)
-    yield init();
+    yield (0, command_js_1.init)();
 }));
 program.command("upload [device-port]")
     .description("デバイスへopnizを書き込みます。")
@@ -33,26 +34,26 @@ program.command("upload [device-port]")
     .option("-i, --id <id>", "opniz IDを指定します。")
     .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(devicePort, options)
-    const answers = yield uploadPrompt(Object.assign({ devicePort }, options));
-    yield upload(answers.devicePort, answers.ssid, answers.password, answers.address, answers.port, answers.id, answers.device);
+    const answers = yield (0, prompt_js_1.uploadPrompt)(Object.assign({ devicePort }, options));
+    yield (0, command_js_1.upload)(answers.devicePort, answers.ssid, answers.password, answers.address, answers.port, answers.id, answers.device);
 }));
 program.command("monitor [device-port]")
     .description("シリアルモニタを表示します。")
     .action((devicePort, options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(devicePort, options)
-    const answers = yield monitorPrompt({ devicePort });
-    yield monitor(answers.devicePort);
+    const answers = yield (0, prompt_js_1.monitorPrompt)({ devicePort });
+    yield (0, command_js_1.monitor)(answers.devicePort);
 }));
 program.command("list")
     .description("接続されているデバイス情報を表示します。")
     .action((options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(options)
-    yield list();
+    yield (0, command_js_1.list)();
 }));
 program.command("arduino [\"options\"]")
     .description("Arduino CLIを直接実行します。[options]をダブルクォーテーションで括って実行してください。（例：opniz arduino \"version\"）")
     .action((options) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(options)
-    yield arduino(options !== null && options !== void 0 ? options : "");
+    yield (0, command_js_1.arduino)(options !== null && options !== void 0 ? options : "");
 }));
 program.parse(process.argv);

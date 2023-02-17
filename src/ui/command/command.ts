@@ -5,6 +5,7 @@ import { upload } from "./upload.js"
 import { arduinoCliPath } from "../../config.js"
 
 $.verbose = false
+process.chdir(__dirname + "/../../../")
 
 const list = async (): Promise<void> => {
 	const result = await spinnerWrap("Loading board list", async () => {

@@ -1,5 +1,4 @@
 import { Command, Option, InvalidArgumentError } from "commander"
-import { require } from "./util.js"
 import { init, list, upload, monitor, arduino } from "./command/command.js"
 import { uploadPrompt, monitorPrompt } from "./prompt.js"
 

@@ -5,6 +5,7 @@ import { deviceInfoList } from "../../config.js"
 import { Device, DeviceInfo } from "../../type.js"
 
 $.verbose = false
+process.chdir(__dirname + "/../../../")
 
 const sketchDir = "sketch"
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`

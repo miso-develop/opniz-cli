@@ -1,4 +1,7 @@
-export const Device = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Extension = exports.Architecture = exports.Platform = exports.Device = void 0;
+exports.Device = {
     "m5atom": "m5atom",
     "m5atoms3-lite": "m5atoms3-lite",
     "m5atoms3": "m5atoms3",
@@ -11,18 +14,18 @@ export const Device = {
     "esp32-pico": "esp32-pico",
     "esp32-s3": "esp32-s3",
 };
-export const Platform = {
+exports.Platform = {
     "Windows": "Windows",
     "macOS": "macOS",
     "Linux": "Linux",
 };
-export const Architecture = {
+exports.Architecture = {
     "ARMv7": "ARMv7",
     "ARM64": "ARM64",
     "32bit": "32bit",
     "64bit": "64bit",
 };
-export const Extension = {
+exports.Extension = {
     ".zip": ".zip",
     ".tar.gz": ".tar.gz",
 };

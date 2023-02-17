@@ -3,6 +3,7 @@ import { arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from
 import { opnizRoot, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config.js"
 
 $.verbose = false
+process.chdir(__dirname + "/../../../")
 
 export const init = async () => {
 	// $.verbose = true // DEBUG:
