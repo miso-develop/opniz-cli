@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,22 +7,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.upload = void 0;
-require("zx/globals");
-const init_1 = require("./init");
-const util_1 = require("../util");
-const config_1 = require("../../config");
+import "zx/globals";
+import { init } from "./init.js";
+import { __dirname, arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util.js";
+import { arduinoCliPath, deviceInfoList } from "../../config.js";
 $.verbose = false;
 process.chdir(__dirname + "/../../../");
 const sketchDir = "sketch";
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`;
-const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
-    const deviceInfo = config_1.deviceInfoList[device];
+export const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
+    const deviceInfo = deviceInfoList[device];
     try {
-        yield createSketch(ssid, password, address, port, id, deviceInfo.sketch);
-        yield (0, util_1.spinnerWrap)(`Install library`, () => __awaiter(void 0, void 0, void 0, function* () {
-            yield (0, init_1.init)();
+        yield createSketch(ssid, password, address, port, id, device);
+        yield spinnerWrap(`Install library`, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield init();
             yield Promise.all([
                 installDeviceLibraries(deviceInfo.library),
                 installOpniz(deviceInfo.repo),
@@ -35,19 +32,10 @@ const upload = (devicePort, ssid, password, address, port, id, device) => __awai
         fs.removeSync(sketchDir);
     }
 });
-exports.upload = upload;
-const uploadSketch = (devicePort, fqbn) => __awaiter(void 0, void 0, void 0, function* () {
-    const compileResult = yield (0, util_1.spinnerWrap)(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
-        return (yield $ `${config_1.arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout;
-    }), "succeed");
-    console.log(compileResult.replace(/(\n\n)+/, ""));
-    const uploadResult = yield (0, util_1.spinnerWrap)(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
-        return (yield $ `${config_1.arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout;
-    }), "succeed");
-    console.log(uploadResult.replace(/(\n\n)+/, ""));
-});
-const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => __awaiter(void 0, void 0, void 0, function* () {
-    const templateSketch = sketch;
+const createSketch = (ssid, password, address, port = 3000, id = "", device) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const deviceInfo = deviceInfoList[device];
+    const templateSketch = (_a = deviceInfo.sketch) !== null && _a !== void 0 ? _a : `${device}.ino`;
     const templateSketchPath = `./template/${templateSketch}`;
     let sketchSource = fs.readFileSync(templateSketchPath, "utf-8");
     sketchSource = sketchSource.replace(/<SSID>/g, ssid);
@@ -62,12 +50,23 @@ const createSketch = (ssid, password, address, port = 3000, id = "", sketch) => 
 const installDeviceLibraries = (libraries) => __awaiter(void 0, void 0, void 0, function* () {
     if (libraries === "")
         return;
-    if (yield (0, util_1.isLatestLibraries)(libraries))
+    if (yield isLatestLibraries(libraries))
         return;
-    return (yield (0, util_1.arduinoCliExec)(`lib install ${libraries}`)).stdout;
+    yield arduinoCliExec(`lib update-index`);
+    return (yield arduinoCliExec(`lib install ${libraries}`)).stdout;
 });
 const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
-    if (yield (0, util_1.isLatestOpniz)(repo))
+    if (yield isLatestOpniz(repo))
         return;
-    return (yield (0, util_1.arduinoCliExec)(`lib install --git-url ${repo}`)).stdout;
+    return (yield arduinoCliExec(`lib install --git-url ${repo}`)).stdout;
+});
+const uploadSketch = (devicePort, fqbn) => __awaiter(void 0, void 0, void 0, function* () {
+    const compileResult = yield spinnerWrap(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
+        return (yield $ `${arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout;
+    }), "succeed");
+    console.log(compileResult.replace(/(\n\n)+/, ""));
+    const uploadResult = yield spinnerWrap(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
+        return (yield $ `${arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout;
+    }), "succeed");
+    console.log(uploadResult.replace(/(\n\n)+/, ""));
 });
