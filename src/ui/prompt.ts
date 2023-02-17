@@ -1,9 +1,9 @@
-import inquirer from "inquirer"
 import "zx/globals"
+import inquirer from "inquirer"
 import wifi from "node-wifi"
-import { arduinoCliExec, spinnerWrap } from "./util"
-import { arduinoCliPath } from "../config"
-import { Device } from "../type"
+import { __dirname, arduinoCliExec, spinnerWrap } from "./util.js"
+import { arduinoCliPath, defaultDevice, defaultPort } from "../config.js"
+import { Device } from "../type.js"
 
 $.verbose = false
 process.chdir(__dirname + "/../../")
@@ -141,14 +141,14 @@ const setUploadQuestions = async (options): Promise<inquirer.QuestionCollection[
 		name: "device",
 		type: "list",
 		choices: deviceList,
-		default: "m5atom",
+		default: defaultDevice,
 		message: "デバイスを選択してください:",
 	})
 		
 	if (!options.port || !validPortNumber(options.port)) questions.push({
 		name: "port",
 		type: "input",
-		default: 3000,
+		default: defaultPort,
 		message: "opnizプログラムの通信ポート番号を入力してください:",
 		validate: validPromptPortNumber,
 	})

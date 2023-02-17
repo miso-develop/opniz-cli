@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,39 +7,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.monitorPrompt = exports.uploadPrompt = void 0;
-const inquirer_1 = __importDefault(require("inquirer"));
-require("zx/globals");
-const node_wifi_1 = __importDefault(require("node-wifi"));
-const util_1 = require("./util");
-const type_1 = require("../type");
+import "zx/globals";
+import inquirer from "inquirer";
+import wifi from "node-wifi";
+import { __dirname, arduinoCliExec, spinnerWrap } from "./util.js";
+import { defaultDevice, defaultPort } from "../config.js";
+import { Device } from "../type.js";
 $.verbose = false;
 process.chdir(__dirname + "/../../");
-const deviceList = Object.keys(type_1.Device);
-const uploadPrompt = (options) => __awaiter(void 0, void 0, void 0, function* () {
+const deviceList = Object.keys(Device);
+export const uploadPrompt = (options) => __awaiter(void 0, void 0, void 0, function* () {
     const questions = yield setUploadQuestions(options);
     const answers = yield runPrompt(questions);
     const mergedAnswers = mergeAnswers(options, answers);
     // console.log(mergedAnswers) // DEBUG:
     return mergedAnswers;
 });
-exports.uploadPrompt = uploadPrompt;
-const monitorPrompt = (options) => __awaiter(void 0, void 0, void 0, function* () {
+export const monitorPrompt = (options) => __awaiter(void 0, void 0, void 0, function* () {
     const questions = yield setMonitorQuestions(options);
     const answers = yield runPrompt(questions);
     const mergedAnswers = Object.assign(Object.assign({}, options), answers);
     // console.log(mergedAnswers) // DEBUG:
     return mergedAnswers;
 });
-exports.monitorPrompt = monitorPrompt;
 const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
     // MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
     // const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
-    const result = (yield (0, util_1.arduinoCliExec)(`board list`)).stdout.replace(/(\n\n)+/, "");
+    const result = (yield arduinoCliExec(`board list`)).stdout.replace(/(\n\n)+/, "");
     const portList = result
         .split("\n")
         .map(line => line.split(" ")[0])
@@ -49,8 +42,8 @@ const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getSsidList = () => __awaiter(void 0, void 0, void 0, function* () {
     const networks = yield new Promise((resolve, reject) => {
-        node_wifi_1.default.init();
-        node_wifi_1.default.scan((error, networks) => error ? reject(error) : resolve(networks));
+        wifi.init();
+        wifi.scan((error, networks) => error ? reject(error) : resolve(networks));
     });
     const ssidList = networks
         .map(network => network.ssid)
@@ -93,7 +86,7 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
         questions.push({
             name: "devicePort",
             type: "list",
-            choices: yield (0, util_1.spinnerWrap)("Loading serial port", getPortList),
+            choices: yield spinnerWrap("Loading serial port", getPortList),
             message: "デバイスのシリアルポートを選択してください:",
         });
     if (!options.ssid && ssidList.length > 1)
@@ -142,14 +135,14 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
             name: "device",
             type: "list",
             choices: deviceList,
-            default: "m5atom",
+            default: defaultDevice,
             message: "デバイスを選択してください:",
         });
     if (!options.port || !validPortNumber(options.port))
         questions.push({
             name: "port",
             type: "input",
-            default: 3000,
+            default: defaultPort,
             message: "opnizプログラムの通信ポート番号を入力してください:",
             validate: validPromptPortNumber,
         });
@@ -164,7 +157,7 @@ const setUploadQuestions = (options) => __awaiter(void 0, void 0, void 0, functi
 });
 const setMonitorQuestions = (options) => __awaiter(void 0, void 0, void 0, function* () {
     const questions = [];
-    yield (0, util_1.spinnerWrap)("Loading serial port", () => __awaiter(void 0, void 0, void 0, function* () {
+    yield spinnerWrap("Loading serial port", () => __awaiter(void 0, void 0, void 0, function* () {
         if (!options.devicePort)
             questions.push({
                 name: "devicePort",
@@ -176,7 +169,7 @@ const setMonitorQuestions = (options) => __awaiter(void 0, void 0, void 0, funct
     return questions;
 });
 const runPrompt = (questions) => __awaiter(void 0, void 0, void 0, function* () {
-    const answers = yield inquirer_1.default.prompt(questions);
+    const answers = yield inquirer.prompt(questions);
     if (answers.ssidInput) {
         answers.ssid = answers.ssidInput;
         delete answers.ssidInput;
