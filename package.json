@@ -1,6 +1,6 @@
 {
 	"name": "opniz-cli",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"description": "",
 	"keywords": [
 		"opniz",
@@ -21,7 +21,6 @@
 	"bin": {
 		"opniz": "dist/index.js"
 	},
-	"type": "module",
 	"engines": {
 		"node": ">=16.x"
 	},
@@ -63,11 +62,11 @@
 	"dependencies": {
 		"adm-zip": "^0.5.10",
 		"commander": "^10.0.0",
-		"inquirer": "^9.1.4",
+		"inquirer": "^8.2.5",
 		"node-wifi": "^2.0.16",
-		"ora": "^6.1.2",
+		"ora": "^5.4.1",
 		"tar": "^6.1.13",
-		"zx": "^7.1.1"
+		"zx": "^4.3.0"
 	},
 	"devDependencies": {
 		"@types/eslint": "^8.21.1",
