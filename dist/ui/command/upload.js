@@ -9,10 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import "zx/globals";
 import { init } from "./init.js";
-import { __dirname, arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util.js";
-import { arduinoCliPath, deviceInfoList } from "../../config.js";
+import { arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util.js";
+import { deviceInfoList } from "../../config.js";
 $.verbose = false;
-process.chdir(__dirname + "/../../../");
 const sketchDir = "sketch";
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`;
 export const upload = (devicePort, ssid, password, address, port, id, device) => __awaiter(void 0, void 0, void 0, function* () {
@@ -62,11 +61,11 @@ const installOpniz = (repo) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const uploadSketch = (devicePort, fqbn) => __awaiter(void 0, void 0, void 0, function* () {
     const compileResult = yield spinnerWrap(`Compile sketch`, () => __awaiter(void 0, void 0, void 0, function* () {
-        return (yield $ `${arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout;
+        return (yield arduinoCliExec(`compile --fqbn ${fqbn} sketch`)).stdout;
     }), "succeed");
     console.log(compileResult.replace(/(\n\n)+/, ""));
     const uploadResult = yield spinnerWrap(`Upload opniz to port: ${devicePort}`, () => __awaiter(void 0, void 0, void 0, function* () {
-        return (yield $ `${arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout;
+        return (yield arduinoCliExec(`upload --fqbn ${fqbn} --port ${devicePort} sketch`)).stdout;
     }), "succeed");
     console.log(uploadResult.replace(/(\n\n)+/, ""));
 });

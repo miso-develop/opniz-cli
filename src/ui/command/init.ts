@@ -1,9 +1,8 @@
 import "zx/globals"
-import { __dirname, arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util.js"
-import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config.js"
+import { arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util.js"
+import { opnizRoot, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config.js"
 
 $.verbose = false
-process.chdir(__dirname + "/../../../")
 
 export const init = async () => {
 	// $.verbose = true // DEBUG:

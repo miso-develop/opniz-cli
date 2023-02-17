@@ -7,11 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { __dirname } from "./ui/util.js";
 import { install } from "./ui/command/install.js";
 import { init } from "./ui/command/command.js";
 ~(() => __awaiter(void 0, void 0, void 0, function* () {
-    process.chdir(__dirname + "/../");
     yield install();
     yield init();
 }))();

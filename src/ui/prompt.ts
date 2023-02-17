@@ -1,12 +1,11 @@
 import "zx/globals"
 import inquirer from "inquirer"
 import wifi from "node-wifi"
-import { __dirname, arduinoCliExec, spinnerWrap } from "./util.js"
-import { arduinoCliPath, defaultDevice, defaultPort } from "../config.js"
+import { arduinoCliExec, spinnerWrap } from "./util.js"
+import { defaultDevice, defaultPort } from "../config.js"
 import { Device } from "../type.js"
 
 $.verbose = false
-process.chdir(__dirname + "/../../")
 
 const deviceList = Object.keys(Device)
 
@@ -29,8 +28,6 @@ export const monitorPrompt = async (options) => {
 
 
 const getPortList = async (): Promise<string[]> => {
-	// MEMO: zxで`arduino-cli board list`を実行すると以降プロンプトでの文字列入力時の挙動がなぜかやばくなるため、child_process.execでの実行に変更
-	// const result = (await $`${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "")
 	const result = (await arduinoCliExec(`board list`)).stdout.replace(/(\n\n)+/, "")
 	
 	const portList = result

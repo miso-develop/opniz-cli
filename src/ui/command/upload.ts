@@ -1,11 +1,10 @@
 import "zx/globals"
 import { init } from "./init.js"
-import { __dirname, arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util.js"
-import { arduinoCliPath, deviceInfoList } from "../../config.js"
+import { arduinoCliExec, spinnerWrap, isLatestLibraries, isLatestOpniz } from "../util.js"
+import { deviceInfoList } from "../../config.js"
 import { Device, DeviceInfo } from "../../type.js"
 
 $.verbose = false
-process.chdir(__dirname + "/../../../")
 
 const sketchDir = "sketch"
 const sketchPath = `./${sketchDir}/${sketchDir}.ino`
@@ -77,12 +76,12 @@ const installOpniz = async (repo: string): Promise<string | void> => {
 
 const uploadSketch = async (devicePort: string, fqbn: string) => {
 	const compileResult = await spinnerWrap(`Compile sketch`, async () => {
-		return (await $`${arduinoCliPath} compile --fqbn ${fqbn} sketch`).stdout
+		return (await arduinoCliExec(`compile --fqbn ${fqbn} sketch`)).stdout
 	}, "succeed")
 	console.log(compileResult.replace(/(\n\n)+/, ""))
 	
 	const uploadResult = await spinnerWrap(`Upload opniz to port: ${devicePort}`, async () => {
-		return (await $`${arduinoCliPath} upload --fqbn ${fqbn} --port ${devicePort} sketch`).stdout
+		return (await arduinoCliExec(`upload --fqbn ${fqbn} --port ${devicePort} sketch`)).stdout
 	}, "succeed")
 	console.log(uploadResult.replace(/(\n\n)+/, ""))
 }

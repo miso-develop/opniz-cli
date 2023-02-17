@@ -8,12 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import "zx/globals";
-import { __dirname, spinnerWrap } from "../util.js";
+import { spinnerWrap } from "../util.js";
 import { init } from "./init.js";
 import { upload } from "./upload.js";
 import { arduinoCliPath } from "../../config.js";
 $.verbose = false;
-process.chdir(__dirname + "/../../");
 const list = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield spinnerWrap("Loading board list", () => __awaiter(void 0, void 0, void 0, function* () {
         return (yield $ `${arduinoCliPath} board list`).stdout.replace(/(\n\n)+/, "");

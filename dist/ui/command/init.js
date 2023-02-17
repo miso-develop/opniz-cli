@@ -8,10 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import "zx/globals";
-import { __dirname, arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util.js";
+import { arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util.js";
 import { opnizRoot, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config.js";
 $.verbose = false;
-process.chdir(__dirname + "/../../../");
 export const init = () => __awaiter(void 0, void 0, void 0, function* () {
     // $.verbose = true // DEBUG:
     yield initConfig();
