@@ -1,7 +1,10 @@
 import "zx/globals"
+import { fileURLToPath } from "url"
 import { Device, DeviceInfo, DeviceInfoList } from "./type.js"
 
-export const opnizRoot = `.`
+const rootPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)) + "/../")
+
+export const opnizRoot = rootPath
 
 export const downloadPath = `${opnizRoot}/download`
 export const installPath = `${opnizRoot}/arduino-cli`
