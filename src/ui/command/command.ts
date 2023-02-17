@@ -1,8 +1,8 @@
 import "zx/globals"
-import { spinnerWrap } from "../util"
-import { init } from "./init"
-import { upload } from "./upload"
-import { arduinoCliPath } from "../../config"
+import { __dirname, spinnerWrap } from "../util.js"
+import { init } from "./init.js"
+import { upload } from "./upload.js"
+import { arduinoCliPath } from "../../config.js"
 
 $.verbose = false
 process.chdir(__dirname + "/../../")
@@ -16,7 +16,7 @@ const list = async (): Promise<void> => {
 
 const monitor = async (devicePort: string): Promise<void> => {
 	try {
-		await $`${arduinoCliPath} monitor --port ${devicePort}`.pipe(process.stdout)
+		await $`${arduinoCliPath} monitor --port ${devicePort} --config baudrate=115200`.pipe(process.stdout)
 	} catch (e) {
 		// console.log(e.message)
 	}
