@@ -3,12 +3,12 @@ import ora from "ora"
 import util from "util"
 import { exec } from "child_process"
 import { fileURLToPath } from "url"
-import { dirname } from "path"
 import { createRequire } from "module"
 import { arduinoCliPath, core } from "../config.js"
 
-export const __filename = fileURLToPath(import.meta.url)
-export const __dirname = dirname(__filename)
+export const getFilename = (meta) => fileURLToPath(meta.url)
+export const getDirname = (meta) => path.dirname(fileURLToPath(meta.url))
+
 export const require = createRequire(import.meta.url)
 
 export const zxFormat = (templateStrings: string) => [templateStrings] as any as TemplateStringsArray
