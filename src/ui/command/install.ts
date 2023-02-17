@@ -1,8 +1,8 @@
 import "zx/globals"
 import AdmZip from "adm-zip"
 import tar from "tar"
-import { downloadPath, installPath, arduinoCliVersion } from "../../config"
-import { OSInfo, Platform, Architecture, Extension } from "../../type"
+import { downloadPath, installPath, arduinoCliVersion } from "../../config.js"
+import { OSInfo, Platform, Architecture, Extension } from "../../type.js"
 
 export const install = async (): Promise<void> => {
 	const osInfo = getOSInfo()

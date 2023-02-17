@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import "./ui/argParser"
+import "./ui/argParser.js"

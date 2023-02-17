@@ -1,6 +1,6 @@
 import "zx/globals"
-import { arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util"
-import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config"
+import { __dirname, arduinoCliExec, retryArduinoCli, isLatestLibraries, isLatestCore } from "../util.js"
+import { opnizRoot, arduinoCliPath, arduinoConfigPath, arduinoDirsPath, boardManager, core, dependenceLibraries } from "../../config.js"
 
 $.verbose = false
 process.chdir(__dirname + "/../../../")
