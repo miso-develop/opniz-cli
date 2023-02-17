@@ -1,8 +1,15 @@
+import "zx/globals"
 import ora from "ora"
 import util from "util"
 import { exec } from "child_process"
-import { arduinoCliPath, core } from "../config"
-import { fetch } from "zx"
+import { fileURLToPath } from "url"
+import { dirname } from "path"
+import { createRequire } from "module"
+import { arduinoCliPath, core } from "../config.js"
+
+export const __filename = fileURLToPath(import.meta.url)
+export const __dirname = dirname(__filename)
+export const require = createRequire(import.meta.url)
 
 export const zxFormat = (templateStrings: string) => [templateStrings] as any as TemplateStringsArray
 
@@ -54,7 +61,7 @@ export const isLatestCore = async (): Promise<boolean> => {
 
 export const isLatestOpniz = async (repo: string): Promise<boolean> => {
 	const githubApiUrl = repo.replace("github.com/", "api.github.com/repos/") + "/tags"
-	const latestVersion = (await (await fetch(githubApiUrl)).json())[0].name
+	const latestVersion = (await (await fetch(githubApiUrl)).json() as any)[0].name
 	const opnizType = repo.split("/").pop()?.split("-").pop()
 	const opnizLibrary = opnizType + latestVersion.replace("v", "@")
 	const list = (await arduinoCliExec(`lib list`)).stdout
