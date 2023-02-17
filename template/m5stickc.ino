@@ -1,21 +1,15 @@
-#include <OpnizEsp32.h>
+#include <OpnizM5Unified.h>
 #include <lib/WiFiConnector.h>
-#include <M5StickC.h>
 
 WiFiConnector wifiConnector("<SSID>", "<PASSWORD>");
-Opniz::Esp32* opniz = new Opniz::Esp32("<ADDRESS>", <PORT>, "<ID>");
-
-auto blink = [](boolean state) {
-    pinMode(M5_LED, OUTPUT);
-    digitalWrite(M5_LED, state ? LOW : HIGH);
-};
+Opniz::M5Unified* opniz = new Opniz::M5Unified("<ADDRESS>", <PORT>, "<ID>");
 
 void setup() {
-    M5.begin(false, false, true);
-    Serial.begin(9600);
+    initM5();
     wifiConnector.setTimeoutCallback([]() { esp_restart(); });
-    wifiConnector.setConnectingSignal(blink);
+    wifiConnector.setConnectingSignal(genBlinkDisplayMinWide("<SSID>", "<ADDRESS>", <PORT>, "<ID>"));
     wifiConnector.connect();
+    Serial.printf("opniz server address: %s\nopniz server port: %u\n\n", opniz->getAddress(), opniz->getPort());
     opniz->connect();
 }
 
