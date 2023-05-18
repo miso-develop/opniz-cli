@@ -39,10 +39,11 @@ const getPortList = async (): Promise<string[]> => {
 }
 
 const getSsidList = async (): Promise<string[]>=> {
-	const networks: any[] = await new Promise((resolve, reject) => {
+	const networks: any[] = await new Promise((resolve) => {
 		wifi.init()
-		wifi.scan((error, networks) => error ? reject(error) : resolve(networks))
+		wifi.scan((error, networks) => resolve(error ? [] : networks))
 	})
+	
 	const ssidList = networks
 		.map(network => network.ssid)
 		.filter(ssid => ssid !== "")

@@ -47,9 +47,9 @@ const getPortList = () => __awaiter(void 0, void 0, void 0, function* () {
     return portList;
 });
 const getSsidList = () => __awaiter(void 0, void 0, void 0, function* () {
-    const networks = yield new Promise((resolve, reject) => {
+    const networks = yield new Promise((resolve) => {
         node_wifi_1.default.init();
-        node_wifi_1.default.scan((error, networks) => error ? reject(error) : resolve(networks));
+        node_wifi_1.default.scan((error, networks) => resolve(error ? [] : networks));
     });
     const ssidList = networks
         .map(network => network.ssid)
