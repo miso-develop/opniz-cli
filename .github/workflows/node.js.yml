@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        node-version: [15.x, 16.x, 17.x, 18.x]
+        node-version: [16.x, 17.x, 18.x, 19.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -28,4 +28,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: npm
     
+    # update
     - run: npm run update
+    - run: npm run build:prod
+    
+    # command test
+    - run: node ./dist/index.js arduino "version"
+    - run: node ./dist/index.js list
+    
+    # dir change test
+    - run: cd template && node ../dist/index.js arduino "version"
+    - run: cd template && node ../dist/index.js list
