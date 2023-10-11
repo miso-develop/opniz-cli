@@ -1,6 +1,6 @@
 # opniz CLI
 
-opniz CLIは[opniz Arduino Library](https://github.com/miso-develop/opniz-arduino-m5atom)の[Basicスケッチ](https://github.com/miso-develop/opniz-arduino-m5atom/blob/main/examples/Basic/Basic.ino)を、コマンドから簡単に書き込めるCLIツールです。  
+opniz CLIは[opniz Arduino Library](https://github.com/miso-develop/opniz-arduino-m5unified)の[Basicスケッチ](https://github.com/miso-develop/opniz-arduino-m5atom/blob/main/examples/Basic/Basic.ino)を、コマンドから簡単に書き込めるCLIツールです。  
 [Arduino CLI](https://github.com/arduino/arduino-cli)のラッパーCLIです。  
 
 <img src="https://user-images.githubusercontent.com/22117028/148371155-569e2ae3-7655-4c5c-a38f-4d13dd1ada4b.gif" width="640">
@@ -131,10 +131,6 @@ $ opniz arduino "lib list"
 	* opnizデバイスをNode.jsから遠隔制御するためのSDK
 * [opniz Arduino Library for M5Unified](https://github.com/miso-develop/opniz-arduino-m5unified)
 	* M5Unified向けArduinoライブラリ
-* [opniz Arduino Library for M5ATOM](https://github.com/miso-develop/opniz-arduino-m5atom)
-	* M5ATOM向けArduinoライブラリ
-* [opniz Arduino Library for ESP32](https://github.com/miso-develop/opniz-arduino-esp32)
-	* ESP32向けArduinoライブラリ
 * [opniz Server](https://github.com/miso-develop/opniz-server)
 	* opniz Node.js SDKやopnizデバイスからのJSON RPCメッセージを中継するWebSocketサーバ
 
